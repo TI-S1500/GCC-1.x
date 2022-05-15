@@ -4,30 +4,30 @@
 \entry {\code {#error}}{32}
 \entry {\code {#ident}}{34}
 \entry {\code {#if}}{28}
-\entry {\code {#ifdef}}{32}
-\entry {\code {#ifndef}}{32}
+\entry {\code {#ifdef}}{31}
+\entry {\code {#ifndef}}{31}
 \entry {\code {#include}}{4}
 \entry {\code {#line}}{33}
 \entry {\code {#pragma}}{34}
 \initial {-}
-\entry {\code {-C}}{36}
-\entry {\code {-d}}{37}
+\entry {\code {-C}}{35}
+\entry {\code {-d}}{36}
 \entry {\code {-D}}{36}
-\entry {\code {-i}}{37}
+\entry {\code {-i}}{36}
 \entry {\code {-I}}{36}
-\entry {\code {-M}}{37}
-\entry {\code {-MM}}{37}
+\entry {\code {-M}}{36}
+\entry {\code {-MM}}{36}
 \entry {\code {-P}}{35}
-\entry {\code {-pedantic}}{36}
-\entry {\code {-trigraphs}}{36}
-\entry {\code {-U}}{37}
-\entry {\code {-undef}}{37}
+\entry {\code {-pedantic}}{35}
+\entry {\code {-trigraphs}}{35}
+\entry {\code {-U}}{36}
+\entry {\code {-undef}}{36}
 \initial {{@fam @ttfam @tentt @char '137}}
 \entry {\code {{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}BASE{@fam @ttfam @tentt @char '137}FILE{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}}}{12}
 \initial {{@fam @ttfam @tentt @char '137}}
 \entry {\code {{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}DATE{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}}}{12}
 \initial {{@fam @ttfam @tentt @char '137}}
-\entry {\code {{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}FILE{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}}}{12}
+\entry {\code {{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}FILE{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}}}{11}
 \initial {{@fam @ttfam @tentt @char '137}}
 \entry {\code {{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}LINE{@fam @ttfam @tentt @char '137}{@fam @ttfam @tentt @char '137}}}{12}
 \initial {{@fam @ttfam @tentt @char '137}}
@@ -39,7 +39,7 @@
 \initial {D}
 \entry {\code {defined}}{31}
 \initial {M}
-\entry {\code {M68020}}{14}
+\entry {\code {M68020}}{13}
 \entry {\code {m68k}}{13}
 \entry {\code {mc68000}}{13}
 \initial {N}

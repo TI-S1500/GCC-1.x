@@ -162,7 +162,7 @@ extern int target_flags;
    For the 68000, we give the data registers numbers 0-7,
    the address registers numbers 010-017,
    and the 68881 floating point registers numbers 020-027.  */
-#define FIRST_PSEUDO_REGISTER 56 /* 24 */
+#define FIRST_PSEUDO_REGISTER 57 /* 24 */
 
 /* 1 for registers that have pervasive standard uses
    and are not available for the register allocator.
@@ -596,10 +596,31 @@ extern enum reg_class regno_reg_class[];
 { register int regno;						\
   register int mask = 0;					\
   extern char call_used_regs[];					\
+  register int inc_stack = 0;					\
+  register int num_inc = 0;					\
+  register int num_index = 0;					\
   int fsize = ((SIZE) + 3) & -4;				\
   if (frame_pointer_needed)					\
-    { if (TARGET_68020 || fsize < 0x8000)			\
-        fprintf (FILE, "\tlink a6,#%d\n", -fsize);		\
+    {								\
+      if (TARGET_68020 || fsize < 0x8000)			\
+	{							\
+	  if ((num_inc = fsize/261120) > 0)			\
+	   {							\
+	     for(num_index=1; num_index <= num_inc; num_index++)\
+	      {							\
+		if (num_index == 1)				\
+                  fprintf (FILE, "\tlink a6,#-261120\n");	\
+		else						\
+                  fprintf (FILE, "\taddl #-261120,sp\n");	\
+		fprintf (FILE, "\tmovl sp@,d7\n");		\
+	      }							\
+	     inc_stack = fsize % 261120;			\
+	     if (inc_stack)					\
+               fprintf (FILE, "\taddl #%d,sp\n", -inc_stack);	\
+	    }							\
+           else							\
+             fprintf (FILE, "\tlink a6,#%d\n", -fsize);		\
+	}							\
       else							\
 	fprintf (FILE, "\tlink a6,#0\n\tsubl #%d,sp\n", fsize); }  \
   for (regno = 24; regno < 56; regno++)				\
@@ -1188,9 +1209,11 @@ extern enum reg_class regno_reg_class[];
 /* Control the assembler format that we output.  */
 
 /* Output at beginning of assembler file.  */
-
+/* clm 05/08/90 - for new COFF versions, we need to begin the */
+/* output with the .file command  */ 
 #define ASM_FILE_START(FILE)	\
-  fprintf (FILE, "#NO_APP\n");
+{  fprintf (FILE, "#NO_APP\n"); \
+   sdbout_filename ((FILE), main_input_filename); }	  
 
 /* Output to assembler file text saying following lines
    may contain character constants, extra white space, comments, etc.  */
@@ -1220,7 +1243,7 @@ extern enum reg_class regno_reg_class[];
  "fpa0", "fpa1", "fpa2", "fpa3", "fpa4", "fpa5", "fpa6", "fpa7", \
  "fpa8", "fpa9", "fpa10", "fpa11", "fpa12", "fpa13", "fpa14", "fpa15", \
  "fpa16", "fpa17", "fpa18", "fpa19", "fpa20", "fpa21", "fpa22", "fpa23", \
- "fpa24", "fpa25", "fpa26", "fpa27", "fpa28", "fpa29", "fpa30", "fpa31", }
+ "fpa24", "fpa25", "fpa26", "fpa27", "fpa28", "fpa29", "fpa30", "fpa31", "sr"}
 
 /* How to renumber registers for dbx and gdb.
    On the Sun-3, the floating point registers have numbers

@@ -86,6 +86,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    register usage: reg_n_refs, reg_n_deaths, reg_n_sets,
    reg_live_length, reg_n_calls_crosses and reg_basic_block.  */
 
+#ifdef ti1500
+/* Added to use GNU C extensions */
+#pragma EXTENSIONS
+#endif
+
 #include <stdio.h>
 #include "config.h"
 #include "rtl.h"
@@ -1302,9 +1307,17 @@ int
 regno_clobbered_at_setjmp (regno)
      int regno;
 {
+#ifdef ti1500
+  /* Fixed the problem of not generating warning messages for variables
+     those are inregisters and referenced only once -- Shawn Islam */
+  return ((reg_n_sets[regno] >= 1)
+	  && (regs_live_at_setjmp[regno / REGSET_ELT_BITS]
+	      & (1 << (regno % REGSET_ELT_BITS))));
+#else
   return (reg_n_sets[regno] > 1
 	  && (regs_live_at_setjmp[regno / REGSET_ELT_BITS]
 	      & (1 << (regno % REGSET_ELT_BITS))));
+#endif
 }
 
 /* Process the registers that are set within X.

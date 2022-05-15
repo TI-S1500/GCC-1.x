@@ -69,6 +69,7 @@ int inhibit_defer_pop;
    function calls being expanded by expand_call.  */
 static tree cleanups_of_this_call;
 
+
 /* Nonzero means current function may call alloca
    as a subroutine.  (__builtin_alloca does not count.)  */
 int may_call_alloca;

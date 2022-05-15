@@ -74,6 +74,12 @@ enum decl_context
 #ifndef LONG_DOUBLE_TYPE_SIZE
 #define LONG_DOUBLE_TYPE_SIZE (BITS_PER_WORD * 2)
 #endif
+
+#ifdef ti1500
+ /* added to give warning messages for GNU C extensions */
+extern int allow_extensions;
+#endif
+
 
 /* a node which has tree code ERROR_MARK, and whose type is itself.
    All erroneous expressions are replaced with this node.  All functions
@@ -1805,6 +1811,11 @@ start_decl (declarator, declspecs, initialized)
 		   IDENTIFIER_POINTER (DECL_NAME (decl)));
 	    initialized = 0;
 	  }
+#ifdef ti1500
+    /* added for giveing warning message if GNU C extensions -- Shawn Islam */
+        else if (!allow_extensions)
+	  warning("typedef initialization is a GNU C extension");
+#endif
 	break;
 
       case FUNCTION_DECL:
@@ -2457,7 +2468,11 @@ grokdeclarator (declarator, declspecs, decl_context, initialized)
 		  error ("size of array `%s' has non-integer type", name);
 		  size = integer_one_node;
 		}
+#ifdef ti1500
+	      if ((pedantic || !allow_extensions) && integer_zerop (size))
+#else
 	      if (pedantic && integer_zerop (size))
+#endif
 		warning ("ANSI C forbids zero-size array `%s'", name);
 	      if (TREE_CODE (size) == INTEGER_CST)
 		{
@@ -2470,7 +2485,11 @@ grokdeclarator (declarator, declspecs, decl_context, initialized)
 		}
 	      else
 		{
+#ifdef ti1500
+		  if (pedantic || !allow_extensions)
+#else
 		  if (pedantic)
+#endif
 		    warning ("ANSI C forbids variable-size array `%s'", name);
 		  itype = build_binary_op (MINUS_EXPR, size, integer_one_node);
 		  itype = build_index_type (itype);
@@ -2542,8 +2561,11 @@ grokdeclarator (declarator, declspecs, decl_context, initialized)
 
 	  if (constp || volatilep)
 	    type = build_type_variant (type, constp, volatilep);
+/* Donot ignore volatile keyword-- Shawn Islam */
+#ifndef ti1500
 	  constp = 0;
 	  volatilep = 0;
+#endif
 
 	  type = build_pointer_type (type);
 
@@ -2658,7 +2680,10 @@ grokdeclarator (declarator, declspecs, decl_context, initialized)
 	    /* Transfer const-ness of array into that of type pointed to.  */
 	    type = build_pointer_type
 		    (build_type_variant (TREE_TYPE (type), constp, volatilep));
+/* Make sure volatile flag is set -- Shawn Islam */
+#ifndef ti1500
 	    volatilep = constp = 0;
+#endif
 	  }
 	else if (TREE_CODE (type) == FUNCTION_TYPE)
 	  type = build_pointer_type (type);
@@ -2709,6 +2734,15 @@ grokdeclarator (declarator, declspecs, decl_context, initialized)
 	  warning ("invalid storage class for function `%s'",
 		   IDENTIFIER_POINTER (declarator));
 	decl = build_decl (FUNCTION_DECL, declarator, type);
+
+#ifdef ti1500
+/* added to handle the functions those are declared volatile -- Shawn Islam */
+  if (constp || volatilep)
+   {
+     warning ("function declared to return const or volatile result");
+     constp = volatilep = 0;
+   }
+#endif
 
 	TREE_EXTERNAL (decl) = 1;
 	/* Record presence of `static'.  */

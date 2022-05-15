@@ -20,6 +20,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 This paragraph is here to try to keep Sun CC from dying.
 The number of chars here seems crucial!!!!  */
 
+#ifdef ti1500
+#pragma EXTENSIONS
+#endif
+
 void record_temp_file ();
 
 /* This program is the user interface to the C compiler and possibly to
@@ -121,6 +125,9 @@ position among the other output files.
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/file.h>
+#ifdef ti1500
+#include <ctype.h>
+#endif
 
 #include "config.h"
 #include "obstack.h"
@@ -146,6 +153,15 @@ extern void free ();
 /* This is the obstack which we use to allocate many strings.  */
 
 struct obstack obstack;
+
+#ifdef ti1500
+/* added for supressing 'linker file unused' message -- Shawn Islam */
+int flag_link_warn = 1;
+/* added for -m to be a linker option and -m* to be a compiler option */
+int m_linker_option = 0;
+/* added for -f to be a linker option and -m* to be a compiler option */
+int f_linker_option = 0;
+#endif
 
 char *handle_braces ();
 char *save_string ();
@@ -184,7 +200,11 @@ void fancy_abort ();
 
 /* config.h can define LIB_SPEC to override the default libraries.  */
 #ifndef LIB_SPEC
+#ifdef ti1500
+#define LIB_SPEC "%{!p:%{!pg:-lc}}%{p:-L/usr/lib/libp -lc}%{pg:-lc_p}"
+#else
 #define LIB_SPEC "%{!p:%{!pg:-lc}}%{p:-lc_p}%{pg:-lc_p}"
+#endif   /* ti1500 */
 #endif
 
 /* config.h can define STARTFILE_SPEC to override the default crt0 files.  */
@@ -200,6 +220,19 @@ void fancy_abort ();
 
 /* This defines which switch letters take arguments.  */
 
+#ifdef ti1500
+/* Added this for -m option used by linker, so that
+   if -m option is given with blank it is treated as
+   linker option, but if -m* is given it is treated as
+   compiler option -- Shawn Islam */
+#ifndef SWITCH_TAKES_ARG
+#define SWITCH_TAKES_ARG(CHAR)      \
+  ((CHAR) == 'D' || (CHAR) == 'U' || (CHAR) == 'o' \
+   || (CHAR) == 'e' || (CHAR) == 'T' || (CHAR) == 'u' \
+   || (CHAR) == 'I' || (CHAR) == 'Y' \
+   || (CHAR) == 'L' || (CHAR) == 'i' || (CHAR) == 'A')
+#endif
+#else
 #ifndef SWITCH_TAKES_ARG
 #define SWITCH_TAKES_ARG(CHAR)      \
   ((CHAR) == 'D' || (CHAR) == 'U' || (CHAR) == 'o' \
@@ -207,11 +240,14 @@ void fancy_abort ();
    || (CHAR) == 'I' || (CHAR) == 'Y' || (CHAR) == 'm' \
    || (CHAR) == 'L' || (CHAR) == 'i' || (CHAR) == 'A')
 #endif
+#endif /* end ti1500 */
+
 
 /* This defines which multi-letter switches take arguments.  */
 
 #ifndef WORD_SWITCH_TAKES_ARG
-#define WORD_SWITCH_TAKES_ARG(STR) (!strcmp (STR, "Tdata"))
+#define WORD_SWITCH_TAKES_ARG(STR) ((!strcmp (STR, "Tdata")) \
+				    || (!strcmp (STR, "VS")))
 #endif
 
 /* This structure says how to run one compiler, and when to do so.  */
@@ -231,52 +267,55 @@ struct compiler
 struct compiler compilers[] =
 {
   {".c",
-   "cpp %{nostdinc} %{C} %{v} %{D*} %{U*} %{I*} %{M*} %{i*} %{trigraphs} -undef \
+   "cpp %{nostdinc} %{C} %{v} %{g} %{D*} %{U*} %{I*} %{M*} %{i*} %{trigraphs} -undef \
         -D__GNUC__ %{ansi:-trigraphs -$ -D__STRICT_ANSI__} %{!ansi:%p} %P\
-        %c %{O:-D__OPTIMIZE__} %{traditional} %{pedantic}\
+        %c %{!NOOP:%{O:-D__OPTIMIZE__}} %{traditional} %{pedantic}\
 	%{Wcomment*} %{Wtrigraphs} %{Wall} %C\
         %i %{!M*:%{!E:%{!pipe:%g.cpp}}}%{E:%{o*}}%{M*:%{o*}} |\n\
     %{!M*:%{!E:cc1 %{!pipe:%g.cpp} %1 \
-		   %{!Q:-quiet} -dumpbase %i %{Y*} %{d*} %{m*} %{f*} %{a}\
-		   %{g} %{O} %{W*} %{w} %{pedantic} %{ansi} %{traditional}\
-		   %{v:-version} %{gg:-symout %g.sym} %{pg:-p} %{p}\
+%{!Q:-quiet} -dumpbase %i %{Y*} %{d*} %{!ti1500_linkerm:%{m*}} \
+%{!ti1500_linkerf:%{f*}} %{tca:-a}\
+		   %{g} %{!NOOP:%{O}} %{W*} %{w} %{pedantic} %{ansi} %{traditional}\
+		   %{v:-version} %{NOIDENT} %{gg:-symout %g.sym} %{pg:-p} %{p}\
 		   %{pg:%{fomit-frame-pointer:%e-pg and -fomit-frame-pointer are incompatible}}\
 		   %{S:%{o*}%{!o*:-o %b.s}}%{!S:-o %{|!pipe:%g.s}} |\n\
-              %{!S:as %{R} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
+              %{!S:as %{coff} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
 		      %{c:%{o*}%{!o*:-o %w%b.o}}%{!c:-o %d%w%b.o}\
                       %{!pipe:%g.s}\n }}}"},
   {".cc",
    "cpp -+ %{nostdinc} %{C} %{v} %{D*} %{U*} %{I*} %{M*} %{i*} \
-        -undef -D__GNUC__ -D__GNUG__ %p %P\
-        %c %{O:-D__OPTIMIZE__} %{traditional} %{pedantic}\
+        -undef -D__GNUC__ %p %P\
+        %c %{!NOOP:%{O:-D__OPTIMIZE__}} %{traditional} %{pedantic}\
 	%{Wcomment*} %{Wtrigraphs} %{Wall} %C\
         %i %{!M*:%{!E:%{!pipe:%g.cpp}}}%{E:%{o*}}%{M*:%{o*}} |\n\
     %{!M*:%{!E:cc1plus %{!pipe:%g.cpp} %1\
-		   %{!Q:-quiet} -dumpbase %i %{Y*} %{d*} %{m*} %{f*} %{a}\
-		   %{g} %{O} %{W*} %{w} %{pedantic} %{traditional}\
-		   %{v:-version} %{gg:-symout %g.sym} %{pg:-p} %{p}\
+%{!Q:-quiet} -dumpbase %i %{Y*} %{d*} %{!ti1500_linkerm:%{m*}} \
+%{!ti1500_linkerf: %{f*}} %{tca:-a}\
+		   %{g} %{!NOOP:%{O}} %{W*} %{w} %{pedantic} %{traditional}\
+		   %{v:-version} %{NOIDENT} %{gg:-symout %g.sym} %{pg:-p} %{p}\
 		   %{pg:%{fomit-frame-pointer:%e-pg and -fomit-frame-pointer are incompatible}}\
 		   %{S:%{o*}%{!o*:-o %b.s}}%{!S:-o %{|!pipe:%g.s}} |\n\
-              %{!S:as %{R} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
+              %{!S:as %{coff} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
 		      %{c:%{o*}%{!o*:-o %w%b.o}}%{!c:-o %d%w%b.o}\
                       %{!pipe:%g.s}\n }}}"},
   {".i",
-   "cc1 %i %1 %{!Q:-quiet} %{Y*} %{d*} %{m*} %{f*} %{a}\
-	%{g} %{O} %{W*} %{w} %{pedantic} %{ansi} %{traditional}\
-	%{v:-version} %{gg:-symout %g.sym} %{pg:-p} %{p}\
+   "cc1 %i %1 %{!Q:-quiet} %{Y*} %{d*} %{!ti1500_linkerm:%{m*}} \
+ %{!ti1500_linkerf:%{f*}} %{tca:-a}\
+	%{g} %{!NOOP:%{O}} %{W*} %{w} %{pedantic} %{ansi} %{traditional}\
+	%{v:-version} %{NOIDENT} %{gg:-symout %g.sym} %{pg:-p} %{p}\
 	%{S:%{o*}%{!o*:-o %b.s}}%{!S:-o %{|!pipe:%g.s}} |\n\
-    %{!S:as %{R} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
+    %{!S:as %{coff} %{j} %{J} %{h} %{d2} %a %{gg:-G %g.sym}\
             %{c:%{o*}%{!o*:-o %w%b.o}}%{!c:-o %d%w%b.o} %{!pipe:%g.s}\n }"},
   {".s",
-   "%{!S:as %{R} %{j} %{J} %{h} %{d2} %a \
+   "%{!S:as %{coff} %{j} %{J} %{h} %{d2} %a \
             %{c:%{o*}%{!o*:-o %w%b.o}}%{!c:-o %d%w%b.o} %i\n }"},
   {".S",
    "cpp %{nostdinc} %{C} %{v} %{D*} %{U*} %{I*} %{M*} %{trigraphs} \
         -undef -D__GNUC__ -$ %p %P\
-        %c %{O:-D__OPTIMIZE__} %{traditional} %{pedantic}\
+        %c %{!NOOP:%{O:-D__OPTIMIZE__}} %{traditional} %{pedantic}\
 	%{Wcomment*} %{Wtrigraphs} %{Wall} %C\
-        %i %{!M*:%{!E:%{!pipe:%g.s}}}%{E:%{o*}}%{M*:%{o*}} |\n\
-    %{!M*:%{!E:%{!S:as %{R} %{j} %{J} %{h} %{d2} %a \
+        %i %{!M*:%{!E:%{!pipe:%g.cpp}}}%{E:%{o*}}%{M*:%{o*}} |\n\
+    %{!M*:%{!E:%{!S:as %{j} %{J} %{h} %{d2} %a \
                     %{c:%{o*}%{!o*:-o %w%b.o}}%{!c:-o %d%w%b.o}\
 		    %{!pipe:%g.s}\n }}}"},
   /* Mark end of table */
@@ -284,10 +323,25 @@ struct compiler compilers[] =
 };
 
 /* Here is the spec for running the linker, after compiling all files.  */
-char *link_spec = "%{!c:%{!M*:%{!E:%{!S:ld %{o*} %l\
+/* clm SI 9/20/90 - modified to handle shared libraries and profiling. */
+/*DBE 2/4/91 - modified to avoid passing crt0.o when using the "-r" option  */
+/* Added -a option in the linker spec and took out -a option from
+   the compiler and replace it with -tca. Also fixed the -r option
+   to work correctly with the -p option -- Shawn Islam    */
+/* Added -V -VS -Z option to the linker spec -- Shawn Islam       */
+char *link_spec = "%{!c:%{!M*:%{!E:%{!coff:%{!S:ld %{o*} %l\
  %{A} %{d} %{e*} %{N} %{n} %{r} %{s} %{S} %{T*} %{t} %{u*} %{X} %{x} %{z}\
- %{y*} %{!A:%{!nostdlib:%S}} \
- %{L*} %o %{!nostdlib:gnulib%s %{g:-lg} %L gnulib%s}\n }}}}";
+ %{y*} %{!nostdlib:%S} \
+ %{L*} %o %{!nostdlib: %{g:-lg} %L}\n }} \
+ %{coff:%{!S:%{!shared:%{!p: /bin/ld %{!r: /lib/crt0.o}} %{p: /bin/ld \
+  %{!r: /lib/mcrt0.o}}} \
+  %{shared: /bin/ld %{!p: %{F: %{!r: /lib/fcrt1.o}} %{!F: %{!r: /lib/crt1.o}}} \
+  %{p: %{!r: /lib/mcrt1.o}}} %{L*} \
+  %{p: -L/usr/lib/libp } %{g: -u _dbargs -lg } %{o*} %l %{V} %{Z} %{VS*} \
+ %{A} %{d} %{e*} %{N} %{n} %{r} %{s} %{S} %{a} %{T*} %{t} %{u*} %{X} %{x} %{z}\
+ %{ti1500_linkerm:-m} %{y*} %{ti1500_linkerf: -f} \
+ %o %L %{shared: %{!r: /lib/crtn.o}} \n }} \
+ }}}";
 
 /* Accumulate a command (program name and args), and run it.  */
 
@@ -954,6 +1008,11 @@ process_command (argc, argv)
 		i++;
 	      else if (WORD_SWITCH_TAKES_ARG (p))
 		i++;
+#ifdef ti1500
+/* added this for S1500 linker -- Shawn Islam */
+              else if ((c == 'f') && isdigit(p[2]))
+		i++;
+#endif
 	    }
 	}
       else
@@ -1646,6 +1705,7 @@ fatal_error (signum)
   kill (getpid (), signum);
 }
 
+
 int
 main (argc, argv)
      int argc;
@@ -1656,6 +1716,64 @@ main (argc, argv)
   int error_count = 0;
   int linker_was_run = 0;
   char *explicit_link_files;
+
+#ifdef ti1500
+/* added for ANSI C LIBRARY  -- Shawn Islam              */
+ int ii;
+ int match = 0;
+ char *anlibflag = "-lansi";
+ char *anheadflag = "-I/usr/include/ansihead";
+
+ for (ii=1; ii<argc; ii++)
+    {
+       if (strcmp("-ansi",argv[ii]) == 0)
+          match = 1;
+       if (strcmp("-SLINK",argv[ii]) == 0)
+          flag_link_warn = 0;
+       if (strcmp("-m",argv[ii]) == 0)
+	  m_linker_option = 1;
+       if (strcmp("-f",argv[ii]) == 0)
+	  f_linker_option = 1;
+    }
+
+ if (match)
+  {
+     if (access("/usr/lib/libansi.a",0) == -1)
+      printf("WARNING: ANSI LIBRARY IS NOT PRESENT (loss of ANSI functionalities only)\n");
+     else
+      {
+        argv[ii] = anheadflag;
+        argc = argc + 1;
+        ii = ii + 1;
+        argv[ii] = anlibflag;
+        argc = argc +1;
+      }
+  }
+
+  /* clm 09/20/90 - added to handle shared libraries */
+  if (access("/lib/crt1.o",0) == 0) {
+    argv[argc] = "-shared";
+    argc = argc + 1;
+   }
+
+ /* added for ti1500 linker option -m -- Shawn Islam   */
+     if (m_linker_option)
+      {
+	argv[argc] = "-ti1500_linkerm";
+	argc = argc + 1;
+	m_linker_option = 0;
+      }
+
+ /* added for ti1500 linker option -f -- Shawn Islam   */
+     if (f_linker_option)
+      {
+	argv[argc] = "-ti1500_linkerf";
+	argc = argc + 1;
+	f_linker_option = 0;
+      }
+    
+#endif
+
 
   programname = argv[0];
 
@@ -1774,6 +1892,9 @@ main (argc, argv)
      complain about input files to be given to the linker.  */
 
   if (! linker_was_run && error_count == 0)
+#ifdef ti1500
+   if (flag_link_warn)
+#endif
     for (i = 0; i < n_infiles; i++)
       if (explicit_link_files[i])
 	error ("%s: linker input file unused since linking not done",
@@ -1787,6 +1908,9 @@ main (argc, argv)
   
   for (i = 0; i < n_switches; i++)
     if (! switches[i].valid)
+#ifdef ti1500
+     if (!(strcmp("SLINK",switches[i].part1) == 0))
+#endif
       error ("unrecognized option `-%s'", switches[i].part1);
 
   /* Delete some or all of the temporary files we made.  */

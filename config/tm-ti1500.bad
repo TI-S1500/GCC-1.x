@@ -1,0 +1,118 @@
+/* Definitions of target machine for GNU compiler.  ISI 68000/68020 version.
+   Intended only for use with GAS, and not ISI's assembler, which is buggy
+   Copyright (C) 1988 Free Software Foundation, Inc.
+
+This file is part of GNU CC.
+
+GNU CC is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 1, or (at your option)
+any later version.
+
+GNU CC is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNU CC; see the file COPYING.  If not, write to
+the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+
+#include "tm-m68k.h"
+
+#define USE_GAS
+
+/* See tm-m68k.h.  7 means 68020 with 68881. */
+
+#define TARGET_DEFAULT 7
+
+/* Define __HAVE_68881__ in preprocessor, unless -msoft-float is specified.
+   This will control the use of inline 68881 insns in certain macros.  */
+
+#define CPP_SPEC "%{!msoft-float:-D__HAVE_68881__}"
+
+/* If the 68881 is used, link must load libmc.a instead of libc.a */
+
+#define LIB_SPEC "%{msoft-float:%{!p:%{!pg:-lc}}%{p:-lc_p}%{pg:-lc_p}}%{!msoft-float:%{!p:%{!pg:-lmc}}%{p:-lmc_p}%{pg:-lmc_p}}"
+
+/* Names to predefine in the preprocessor for this target machine.  */
+
+#define CPP_PREDEFINES "-Dunix -Dmc68000 -Dti1500 -Dm68k -DNU"
+
+/* This is SDB, so it wants SDB format.  */
+
+#define DBX_DEBUGGING_INFO
+
+/* Allocation boundary (in *bits*) for storing pointers in memory.  */
+#undef POINTER_BOUNDARY 
+#define POINTER_BOUNDARY 32 /* 16 in tm-m68k.h */
+
+/* Boundary (in *bits*) on which stack pointer should be aligned.  */
+#undef STACK_BOUNDARY 
+#define STACK_BOUNDARY 32 /* 16 in tm-m68k.h */
+
+/* Allocation boundary (in *bits*) for the code of a function.  */
+#undef FUNCTION_BOUNDARY 
+#define FUNCTION_BOUNDARY 32  /* 16 ins tm-m68k.h */
+
+#undef STRUCTURE_SIZE_BOUNDARY 
+#define STRUCTURE_SIZE_BOUNDARY 32
+
+/* Alignment of field after `int : 0' in a structure.  */
+#undef EMPTY_FIELD_BOUNDARY
+#define EMPTY_FIELD_BOUNDARY 32
+
+/* Override parts of tm-m68000.h to fit the TI 1500 machine.  */
+
+/* Standard register usage.  */
+
+/* Number of actual hardware registers.
+   The hardware registers are assigned numbers for the compiler
+   from 0 to just below FIRST_PSEUDO_REGISTER.
+   All registers that the compiler knows about must be given numbers,
+   even those that are not normally considered general registers.
+   For the 68000, we give the data registers numbers 0-7,
+   the address registers numbers 010-017,
+   and the 68881 floating point registers numbers 020-027.  */
+
+/* 1 for registers not available across function calls.
+   These must include the FIXED_REGISTERS and also any
+   registers that can be used without being saved.
+   The latter must include the registers where values are returned
+   and the register where structure-value addresses are passed.
+   Aside from that, you can include as many other registers as you like.  */
+
+#undef  CALL_USED_REGISTERS
+#undef FIXED_REGISTERS 
+
+/* 1 for registers that have pervasive standard uses
+   and are not available for the register allocator.
+   On the 68000, only the stack pointer is such.  */
+/* fpa0 is also reserved so that it can be used to move shit back and
+   forth between high fpa regs and everything else. */
+
+#define FIXED_REGISTERS  \
+ {0, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 1, \
+  0, 0, 0, 0, 0, 0, 0, 0, \
+  /* FPA registers.  */   \
+  1, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, }
+
+/* 1 for registers not available across function calls.
+   These must include the FIXED_REGISTERS and also any
+   registers that can be used without being saved.
+   The latter must include the registers where values are returned
+   and the register where structure-value addresses are passed.
+   Aside from that, you can include as many other registers as you like.  */
+#define CALL_USED_REGISTERS \
+ {1, 1, 1, 0, 0, 0, 0, 0, \
+  1, 1, 0, 0, 0, 0, 0, 1, \
+  1, 1, 0, 0, 0, 0, 0, 0, \
+  /* FPA registers.  */   \
+  1, 1, 1, 1, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, \
+  0, 0, 0, 0, 0, 0, 0, 0, }

@@ -350,6 +350,7 @@ DEFTREECODE (VAR_DECL, "var_decl", "d", 0)
 DEFTREECODE (PARM_DECL, "parm_decl", "d", 0)
 DEFTREECODE (RESULT_DECL, "result_decl", "d", 0)
 DEFTREECODE (FIELD_DECL, "field_decl", "d", 0)
+DEFTREECODE (FRIEND_DECL, "friend_decl", "d", 0)
 
 /* References to storage.  */
 

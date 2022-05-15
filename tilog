@@ -1,0 +1,7 @@
+Change Log 
+
+Change Date    Originator     File(s)         Function(s) 
+---------------------------------------------------------------
+09/20/90       si/clm         gcc.c           main, link_spec
+
+Added support for shared libraries and profiling.

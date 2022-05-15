@@ -11,77 +11,17 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
-
-
-
-File: gcc.info,  Node: Function Attributes,  Next: Dollar Signs,  Prev: Constructors,  Up: Extensions
-
-Declaring Attributes of Functions
-=================================
-
-In GNU C, you declare certain things about functions called in your
-program which help the compiler optimize function calls.
-
-A few functions, such as `abort' and `exit', cannot return.  These
-functions should be declared `volatile'.  For example,
-
-     extern volatile void abort ();
-
-tells the compiler that it can assume that `abort' will not return. 
-This makes slightly better code, but more importantly it helps avoid
-spurious warnings of uninitialized variables.
-
-Many functions do not examine any values except their arguments, and
-have no effects except the return value.  Such a function can be
-subject to common subexpression elimination and loop optimization
-just as an arithmetic operator would be.  These functions should be
-declared `const'.  For example,
-
-     extern const void square ();
-
-says that the hypothetical function `square' is safe to call fewer
-times than the program says.
-
-Note that a function that has pointer arguments and examines the data
-pointed to must *not* be declared `const'.  Likewise, a function that
-calls a non-`const' function must not be `const'.
-
-Some people object to this feature, claiming that ANSI C's `#pragma'
-should be used instead.  There are two reasons I did not do this.
-
-  1. It is impossible to generate `#pragma' commands from a macro.
-
-  2. The `#pragma' command is just as likely as these keywords to
-     mean something else in another compiler.
-
-These two reasons apply to *any* application whatever: as far as I
-can see, `#pragma' is never useful.
-
-
-
-File: gcc.info,  Node: Dollar Signs,  Next: Alignment,  Prev: Function Attributes,  Up: Extensions
-
-Dollar Signs in Identifier Names
-================================
-
-In GNU C, you may use dollar signs in identifier names.  This is
-because many traditional C implementations allow such identifiers.
-
-Dollar signs are allowed if you specify `-traditional'; they are not
-allowed if you specify `-ansi'.  Whether they are allowed by default
-depends on the target machine; usually, they are not.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 
 
@@ -502,7 +442,7 @@ variable the value it had at the time of the `setjmp'.  On some
 machines, however, `longjmp' will not change the value of global
 register variables.  To be portable, the function that called
 `setjmp' should make other arrangements to save the values of the
-global register variables, and to restore them in a `longjmp'.  This
+global register variables, and to restore them if a `longjmp'.  This
 way, the the same thing will happen regardless of what `longjmp' does.
 
 All global register variable declarations must precede all function
@@ -515,7 +455,7 @@ executable file has no means to supply initial contents for a register.
 
 
 
-File: gcc.info,  Node: Local Reg Vars,  Prev: Global Reg Vars,  Up: Explicit Reg Vars
+File: gcc.info,  Node: Local Reg Vars,  Prev: Local Reg Vars,  Up: Explicit Reg Vars
 
 Specifying Registers for Local Variables
 ----------------------------------------

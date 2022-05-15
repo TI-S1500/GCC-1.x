@@ -358,7 +358,11 @@ plain_type_1 (type)
 	char *tag;
 	int size;
 	sdbout_record_type_name (type);
+#ifndef ti1500
+/* Generate the tag information and the modified S1500 GNU Assembler
+   will recognize it -- Shawn Islam */
 	if (TREE_ASM_WRITTEN (type))
+#endif
 	  {
 	    /* Output the referenced structure tag name
 	       only if the .def has already been output.

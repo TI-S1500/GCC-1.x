@@ -1,0 +1,14 @@
+***************
+*** 91,95 ****
+  /* -m68000 requires special flags to the assembler.
+     The -C flag is passed to a modified GNU assembler to cause COFF
+!    modules to be produced. Remove it if you're not using this. */
+  
+  #define ASM_SPEC \
+--- 91,96 ----
+  /* -m68000 requires special flags to the assembler.
+     The -C flag is passed to a modified GNU assembler to cause COFF
+!    modules to be produced.  Remove it if you're not using this.
+!    (See vasta@apollo.com.)  */
+  
+  #define ASM_SPEC \

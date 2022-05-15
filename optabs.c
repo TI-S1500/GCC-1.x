@@ -1065,9 +1065,11 @@ init_fixtab ()
   if (HAVE_fixunssfdi2)
     fixtab[0][1][1] = CODE_FOR_fixunssfdi2;
 #endif
-#ifdef HAVE_fixunsdfsi2
-  if (HAVE_fixunsdfsi2)
-    fixtab[1][0][1] = CODE_FOR_fixunsdfsi2;
+/* changed to generate inline code rather than lib call */
+
+#ifdef HAVE_fixunsdfsi
+  if (HAVE_fixunsdfsi)
+    fixtab[1][0][1] = CODE_FOR_fixunsdfsi;
 #endif
 #ifdef HAVE_fixunsdfdi2
   if (HAVE_fixunsdfdi2)

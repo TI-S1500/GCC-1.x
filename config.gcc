@@ -165,6 +165,11 @@ then
 		cpu_type=m68k
 		target_machine=tm-sun2.h
 		;;
+   ti1500)                        # ti 1500 with gcc alone
+   	cpu_type=m68k
+      configuration_file=xm-ti1500.h
+		target_machine=tm-ti1500.h
+      ;;
 	hp9k320)			# HP 9000 series 300 with gcc alone
 		cpu_type=m68k
 		configuration_file=xm-hp9k320.h

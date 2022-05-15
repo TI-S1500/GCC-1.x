@@ -1,0 +1,258 @@
+***************
+*** 1011,1015 ****
+      return \"sll %1,0x10,%0\;srl %0,0x10,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1011,1020 ----
+      return \"sll %1,0x10,%0\;srl %0,0x10,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode,
+! 			     INTVAL (operands[1]) & 0xffff);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1032,1036 ****
+      return \"and %1,0xff,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1037,1046 ----
+      return \"and %1,0xff,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode,
+! 			     INTVAL (operands[1]) & 0xff);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1053,1057 ****
+      return \"and %1,0xff,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1063,1072 ----
+      return \"and %1,0xff,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode,
+! 			     INTVAL (operands[1]) & 0xff);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1078,1082 ****
+      return \"sll %1,0x10,%0\;sra %0,0x10,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1093,1102 ----
+      return \"sll %1,0x10,%0\;sra %0,0x10,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       int i = (short)INTVAL (operands[1]);
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode, i);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1099,1103 ****
+      return \"sll %1,0x18,%0\;sra %0,0x18,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1119,1128 ----
+      return \"sll %1,0x18,%0\;sra %0,0x18,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       int i = (char)INTVAL (operands[1]);
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode, i);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1120,1124 ****
+      return \"sll %1,0x18,%0\;sra %0,0x18,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     abort ();
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+--- 1145,1154 ----
+      return \"sll %1,0x18,%0\;sra %0,0x18,%0\";
+    if (GET_CODE (operands[1]) == CONST_INT)
+!     {
+!       int i = (char)INTVAL (operands[1]);
+!       operands[1] = gen_rtx (CONST_INT, VOIDmode, i);
+!       output_asm_insn (\"set %1,%0\", operands);
+!       return \"\";
+!     }
+    if (CONSTANT_ADDRESS_P (XEXP (operands[1], 0)))
+      {
+***************
+*** 1539,1542 ****
+  }")
+  
+  ;;- and instructions (with compliment also)			   
+  (define_insn "andsi3"
+--- 1569,1583 ----
+  }")
+  
++ ;; In case constant factor turns out to be -1.
++ (define_insn ""
++   [(set (match_operand:SI 0 "register_operand" "=r")
++ 	(neg:SI (match_operand:SI 1 "general_operand" "rI")))
++    (clobber (reg:SI 8))
++    (clobber (reg:SI 9))
++    (clobber (reg:SI 12))
++    (clobber (reg:SI 13))]
++   ""
++   "sub %%g0,%1,%0")
++ 
+  ;;- and instructions (with compliment also)			   
+  (define_insn "andsi3"
+***************
+*** 1861,1865 ****
+  	  && strict_single_insn_op_p (SET_SRC (PATTERN (nhead)),
+  				      GET_MODE (SET_DEST (PATTERN (nhead))))
+! 	  && strict_single_insn_op_p (SET_DEST (PATTERN (nhead)), VOIDmode))
+  	{
+  	  head = nhead;
+--- 1902,1911 ----
+  	  && strict_single_insn_op_p (SET_SRC (PATTERN (nhead)),
+  				      GET_MODE (SET_DEST (PATTERN (nhead))))
+! 	  && strict_single_insn_op_p (SET_DEST (PATTERN (nhead)), VOIDmode)
+! 	  /* Moves between FP regs and CPU regs are two insns.  */
+! 	  && !(GET_CODE (SET_SRC (PATTERN (nhead))) == REG
+! 	       && GET_CODE (SET_DEST (PATTERN (nhead))) == REG
+! 	       && (FP_REG_P (SET_SRC (PATTERN (nhead)))
+! 		   != FP_REG_P (SET_DEST (PATTERN (nhead))))))
+  	{
+  	  head = nhead;
+***************
+*** 1948,1952 ****
+        && strict_single_insn_op_p (SET_SRC (PATTERN (head)),
+  				  GET_MODE (SET_DEST (PATTERN (head))))
+!       && strict_single_insn_op_p (SET_DEST (PATTERN (head)), VOIDmode))
+      {
+        /* If at the target of this label we set the condition codes,
+--- 1994,2003 ----
+        && strict_single_insn_op_p (SET_SRC (PATTERN (head)),
+  				  GET_MODE (SET_DEST (PATTERN (head))))
+!       && strict_single_insn_op_p (SET_DEST (PATTERN (head)), VOIDmode)
+!       /* Moves between FP regs and CPU regs are two insns.  */
+!       && !(GET_CODE (SET_SRC (PATTERN (head))) == REG
+! 	   && GET_CODE (SET_DEST (PATTERN (head))) == REG
+! 	   && (FP_REG_P (SET_SRC (PATTERN (head)))
+! 	       != FP_REG_P (SET_DEST (PATTERN (head))))))
+      {
+        /* If at the target of this label we set the condition codes,
+***************
+*** 1963,1967 ****
+  	      && strict_single_insn_op_p (SET_SRC (PATTERN (nhead)),
+  					  GET_MODE (SET_DEST (nhead)))
+! 	      && strict_single_insn_op_p (SET_DEST (PATTERN (nhead)), VOIDmode))
+  	    head = nhead;
+  	}
+--- 2014,2023 ----
+  	      && strict_single_insn_op_p (SET_SRC (PATTERN (nhead)),
+  					  GET_MODE (SET_DEST (nhead)))
+! 	      && strict_single_insn_op_p (SET_DEST (PATTERN (nhead)), VOIDmode)
+! 	      /* Moves between FP regs and CPU regs are two insns.  */
+! 	      && !(GET_CODE (SET_SRC (PATTERN (nhead))) == REG
+! 		   && GET_CODE (SET_DEST (PATTERN (nhead))) == REG
+! 		   && (FP_REG_P (SET_SRC (PATTERN (nhead)))
+! 		       != FP_REG_P (SET_DEST (PATTERN (nhead))))))
+  	    head = nhead;
+  	}
+***************
+*** 2014,2018 ****
+  	(match_operand:SI 1 "single_insn_src_p" "p"))
+     (set (pc) (label_ref (match_operand 2 "" "")))]
+!   ""
+    "* return output_delayed_branch (\"b %l2\", operands, insn);")
+  
+--- 2070,2074 ----
+  	(match_operand:SI 1 "single_insn_src_p" "p"))
+     (set (pc) (label_ref (match_operand 2 "" "")))]
+!   "single_insn_extra_test (operands[0], operands[1])"
+    "* return output_delayed_branch (\"b %l2\", operands, insn);")
+  
+***************
+*** 2033,2039 ****
+    [(set (match_operand:SI 0 "register_operand" "=r")
+  	(match_operand:SI 1 "single_insn_src_p" "p"))
+!    (set (pc) (match_operand:SI 2 "register_operand" "r"))
+!    (use (label_ref (match_operand 3 "" "")))]
+!   "REGNO (operands[0]) != REGNO (operands[2])"
+    "* return output_delayed_branch (\"jmp %2\", operands, insn);")
+  
+--- 2089,2096 ----
+    [(set (match_operand:SI 0 "register_operand" "=r")
+  	(match_operand:SI 1 "single_insn_src_p" "p"))
+!    (parallel [(set (pc) (match_operand:SI 2 "register_operand" "r"))
+! 	      (use (label_ref (match_operand 3 "" "")))])]
+!   "REGNO (operands[0]) != REGNO (operands[2])
+!    && single_insn_extra_test (operands[0], operands[1])"
+    "* return output_delayed_branch (\"jmp %2\", operands, insn);")
+  
+***************
+*** 2041,2046 ****
+    [(set (match_operand:SI 0 "memory_operand" "=m")
+  	(match_operand:SI 1 "reg_or_0_operand" "rJ"))
+!    (set (pc) (match_operand:SI 2 "register_operand" "r"))
+!    (use (label_ref (match_operand 3 "" "")))]
+    ""
+    "* return output_delayed_branch (\"jmp %2\", operands, insn);")
+--- 2098,2103 ----
+    [(set (match_operand:SI 0 "memory_operand" "=m")
+  	(match_operand:SI 1 "reg_or_0_operand" "rJ"))
+!    (parallel [(set (pc) (match_operand:SI 2 "register_operand" "r"))
+! 	      (use (label_ref (match_operand 3 "" "")))])]
+    ""
+    "* return output_delayed_branch (\"jmp %2\", operands, insn);")
+***************
+*** 2106,2110 ****
+  	      (use (reg:SI 31))])]
+    ;;- Don't use operand 1 for most machines.
+!   "! reg_mentioned_p (operands[0], operands[2])"
+    "*
+  {
+--- 2163,2168 ----
+  	      (use (reg:SI 31))])]
+    ;;- Don't use operand 1 for most machines.
+!   "! reg_mentioned_p (operands[0], operands[2])
+!    && single_insn_extra_test (operands[0], operands[1])"
+    "*
+  {
+***************
+*** 2196,2200 ****
+  	      (use (reg:SI 31))])]
+    ;;- Don't use operand 4 for most machines.
+!   "! reg_mentioned_p (operands[0], operands[3])"
+    "*
+  {
+--- 2254,2259 ----
+  	      (use (reg:SI 31))])]
+    ;;- Don't use operand 4 for most machines.
+!   "! reg_mentioned_p (operands[0], operands[3])
+!    && single_insn_extra_test (operands[0], operands[1])"
+    "*
+  {

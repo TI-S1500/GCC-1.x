@@ -11,18 +11,17 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 
 
@@ -39,12 +38,10 @@ Here is the procedure for installing GNU CC on a Unix system.
 * Sun Install::   See below for installation on the Sun.
 * 3B1 Install::   See below for installation on the 3B1.
 * VMS Install::   See below for installation on VMS.
-* HPUX Install::  See below for installation on HPUX.
 
   1. Edit `Makefile'.  If you are using HPUX, or any form of system
      V, you must make a few changes described in comments at the
-     beginning of the file.  Genix requires changes also, and so does
-     the Pyramid.
+     beginning of the file.  Genix requires changes also.
 
   2. On a Sequent system, go to the Berkeley universe.
 
@@ -118,7 +115,7 @@ Here is the procedure for installing GNU CC on a Unix system.
           as follows:
 
                cp /bin/pcc ./pcc
-               adb -w ./pcc - << EOF
+               adb -w ./pcc - << 'EOF'
                15f6?w 6610
                EOF
 
@@ -210,9 +207,6 @@ Here is the procedure for installing GNU CC on a Unix system.
           compiler, due to bugs in that compiler.  *Note 3b1
           Install::.  You can bootstrap it more easily with previous
           versions of GNU CC if you have them.
-
-    `3b1-gas'
-          AT&T 3b1 using the GNU assembler.
 
     `sequent-ns32k'
           Sequent containing ns32000 processors.
@@ -312,8 +306,9 @@ Here is the procedure for installing GNU CC on a Unix system.
           system V, or `tm-vms.h' on VMS.
 
           For the Motorola 88000, use `tm-m88k.h'.  The support for
-          the 88000 does not currently work; it requires extensive
-          changes which we hope to reconcile in version 2.
+          the 88000 has a few unfinished spots because there was no
+          way to run the output.  Bugs are suspected in handling of
+          branch-tables and in the function prologue and epilogue.
 
           For the 80386, don't use `tm-i386.h' directly.  Use
           `tm-i386v.h' if the target machine is running system V,
@@ -357,7 +352,7 @@ Here is the procedure for installing GNU CC on a Unix system.
      `cexp.c' are more recent than `c-parse.y' and `cexp.y' and you
      do not plan to change the `.y' files.)
 
-     Bison versions older than Sept 8, 1988 will produce incorrect
+     Bison versions older that Sept 8, 1988 will produce incorrect
      output for `c-parse.tab.c'.
 
   5. Build the compiler.  Just type `make' in the compiler directory.
@@ -368,18 +363,17 @@ Here is the procedure for installing GNU CC on a Unix system.
      operating system, and should be investigated and reported (*note
      Bugs::.).
 
-     Some commercial compilers fail to compile GNU CC because they
-     have bugs or limitations.  For example, the Microsoft compiler
-     is said to run out of macro space.  Some Ultrix compilers run
-     out of expression space; then you need to break up the statement
-     where the problem happens.
+  6. Optionally, install the library functions for 64-bit integer
+     arithmetic.  You do this with the command `make gnulib2'.  In
+     the future this will happen automatically; for now, it is
+     optional, until we are sure it works on all machines.
 
-  6. If you are using COFF-encapsulation, you must convert `gnulib'
+  7. If you are using COFF-encapsulation, you must convert `gnulib'
      to a GNU-format library at this point.  See the file
      `README-ENCAP' in the directory containing the GNU binary file
      utilities, for directions.
 
-  7. Move the first-stage object files and executables into a
+  8. Move the first-stage object files and executables into a
      subdirectory with this command:
 
           make stage1
@@ -388,7 +382,7 @@ Here is the procedure for installing GNU CC on a Unix system.
      installation is complete, you may wish to delete these files
      with `rm -r stage1'.
 
-  8. Recompile the compiler with itself, with this command:
+  9. Recompile the compiler with itself, with this command:
 
           make CC=stage1/gcc CFLAGS="-g -O -Bstage1/"
 
@@ -398,7 +392,7 @@ Here is the procedure for installing GNU CC on a Unix system.
 
           make CC=stage1/gcc CFLAGS="-g -O -Bstage1/ -msoft-float"
 
-  9. If you wish to test the compiler by compiling it with itself one
+ 10. If you wish to test the compiler by compiling it with itself one
      more time, do this (in C shell):
 
           make stage2
@@ -428,7 +422,7 @@ Here is the procedure for installing GNU CC on a Unix system.
           cmp foo1 foo2
           done
 
- 10. Install the compiler driver, the compiler's passes and run-time
+ 11. Install the compiler driver, the compiler's passes and run-time
      support.  You can use the following command:
 
           make install
@@ -563,7 +557,7 @@ the following procedure might work.  We are unable to test it.
 
   4. Copy this final version of GNU cpp into `/lib/cpp'.
 
-  5. Replace every occurrence of `obstack_free' in `tree.c' with
+  5. Replace every occurance of `obstack_free' in `tree.c' with
      `_obstack_free'.
 
   6. Run `make' to get the first-stage GNU CC.
@@ -573,16 +567,9 @@ the following procedure might work.  We are unable to test it.
   8. Now you can compile GNU CC with itself and install it in the
      normal fashion.
 
-If you have installed an earlier version of GCC, you can compile the
-newer version with that.  However, you will run into trouble
-compiling `gnulib', since that is normally compiled with CC.  To
-solve the problem, uncomment this line in `Makefile':
-
-     CCLIBFLAGS = -B/usr/local/lib/gcc- -tp -Wp,-traditional
-
 
 
-File: gcc.info,  Node: VMS Install,  Next: HPUX Install,  Prev: 3B1 Install,  Up: Installation
+File: gcc.info,  Node: VMS Install,  Prev: 3B1 Install,  Up: Installation
 
 Installing GNU CC on VMS
 ========================
@@ -665,29 +652,6 @@ describe the program's symbols.  It is not straightforward to
 implement this, and we have no time to spend on it, but we might
 consent to install a very modular implementation if you write it. 
 You will probably have to modify GAS as well as GNU CC.
-
-
-
-File: gcc.info,  Node: HPUX Install,  Prev: VMS Install,  Up: Installation
-
-Installing GNU CC on HPUX
-=========================
-
-To install GNU CC on HPUX, you must start by editing the file
-`Makefile'.  Search for the string `HPUX' to find comments saying
-what to change.  You need to change some variable definitions and (if
-you are using GAS) some lines in the rule for the target `gnulib'.
-
-To compile with the HPUX C compiler, you must specify get the file
-`alloca.c' from GNU Emacs.  Then, when you run `make', use this
-argument:
-
-     make ALLOCA=alloca.o
-
-When recompiling GNU CC with itself, do not define `ALLOCA'. 
-Instead, an `-I' option needs to be added to `CFLAGS' as follows:
-
-     make CC=stage1/gcc CFLAGS="-g -O -Bstage1/ -I../binutils/hp-include"
 
 
 
@@ -778,9 +742,11 @@ Incompatibilities of GNU CC
 ***************************
 
 There are several noteworthy incompatibilities between GNU C and most
-existing (non-ANSI) versions of C.  The `-traditional' option
-eliminates most of these incompatibilities, *but not all*, by telling
-GNU C to behave like older C compilers.
+existing (non-ANSI) versions of C.
+
+Ultimately our intention is that the `-traditional' option will
+eliminate most of these incompatibilities by telling GNU C to behave
+like the other C compilers.
 
    * GNU CC normally makes string constants read-only.  If several
      identical-looking string constants are used, GNU CC stores only
@@ -943,24 +909,24 @@ macro `__GNUC__', which is always defined under GNU CC.
 
 * Statement Exprs::     Putting statements and declarations inside expressions.
 * Naming Types::        Giving a name to the type of some expression.
-* Typeof::              `typeof': referring to the type of an expression.
-* Lvalues::             Using `?:', `,' and casts in lvalues.
-* Conditionals::        Omitting the middle operand of a `?:' expression.
-* Zero-Length::         Zero-length arrays.
-* Variable-Length::     Arrays whose length is computed at run time.
-* Subscripting::        Any array can be subscripted, even if not an lvalue.
-* Pointer Arith::       Arithmetic on `void'-pointers and function pointers.
-* Initializers::        Non-constant initializers.
-* Constructors::        Constructor expressions give structures, unions
-                         or arrays as values.
+* Typeof::		`typeof': referring to the type of an expression.
+* Lvalues::		Using `?:', `,' and casts in lvalues.
+* Conditionals::	Omitting the middle operand of a `?:' expression.
+* Zero-Length::		Zero-length arrays.
+* Variable-Length::	Arrays whose length is computed at run time.
+* Subscripting::	Any array can be subscripted, even if not an lvalue.
+* Pointer Arith::	Arithmetic on `void'-pointers and function pointers.
+* Initializers::	Non-constant initializers.
+* Constructors::	Constructor expressions give structures, unions
+			 or arrays as values.
 * Function Attributes:: Declaring that functions have no side effects,
-                         or that they can never return.
+			 or that they can never return.
 * Dollar Signs::        Dollar sign is allowed in identifiers.
 * Alignment::           Inquiring about the alignment of a type or variable.
 * Inline::              Defining inline functions (as fast as macros).
-* Extended Asm::        Assembler instructions with C expressions as operands.
-                         (With them you can define ``built-in'' functions.)
-* Asm Labels::          Specifying the assembler name to use for a C symbol.
+* Extended Asm::	Assembler instructions with C expressions as operands.
+			 (With them you can define ``built-in'' functions.)
+* Asm Labels::		Specifying the assembler name to use for a C symbol.
 * Explicit Reg Vars::   Defining variables residing in specified registers.
 * Alternate Keywords::  `__const__', `__asm__', etc., for header files.
 
@@ -1354,5 +1320,60 @@ array variable with it.  The former is probably slower than a
 C initializer would do.
 
      output = ((int[]) { 2, x, 28 }) [input];
+
+
+
+File: gcc.info,  Node: Function Attributes,  Next: Dollar Signs,  Prev: Constructors,  Up: Extensions
+
+Declaring Attributes of Functions
+=================================
+
+In GNU C, you declare certain things about functions called in your
+program which help the compiler optimize function calls.
+
+A few functions, such as `abort' and `exit', cannot return.  These
+functions should be declared `volatile'.  For example,
+
+     extern volatile void abort ();
+
+tells the compiler that it can assume that `abort' will not return. 
+This makes slightly better code, but more importantly it helps avoid
+spurious warnings of uninitialized variables.
+
+Many functions do not examine any values except their arguments, and
+have no effects except the return value.  Such a function can be
+subject to common subexpression elimination and loop optimization
+just as an arithmetic operator would be.  These functions should be
+declared `const'.  For example,
+
+     extern const void square ();
+
+says that the hypothetical function `square' is safe to call fewer
+times than the program says.
+
+Note that a function that has pointer arguments and examines the data
+pointed to must *not* be declared `const'.  Likewise, a function that
+calls a non-`const' function must not be `const'.
+
+Some people object to this feature, claiming that ANSI C's `#pragma'
+should be used instead.  There are two reasons I did not do this.
+
+  1. It is impossible to generate `#pragma' commands from a macro.
+
+  2. The `#pragma' command is just as likely as these keywords to
+     mean something else in another compiler.
+
+These two reasons apply to *any* application whatever: as far as I
+can see, `#pragma' is never useful.
+
+
+
+File: gcc.info,  Node: Dollar Signs,  Next: Alignment,  Prev: Function Attributes,  Up: Extensions
+
+Dollar Signs in Identifier Names
+================================
+
+In GNU C, you may use dollar signs in identifier names.  This is
+because many traditional C implementations allow such identifiers.
 
 

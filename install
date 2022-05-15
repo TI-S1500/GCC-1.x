@@ -1,0 +1,401 @@
+# This script was written by Dale Elliott at Texas Instruments.
+# Please report any problems, etc. with him.
+
+if [ "`id`" != "uid=0(root) gid=0(root)" ]
+ then
+  echo '\n    **** ERROR: Must be root for installation - STOPPING'
+   exit 255
+fi
+
+ORGDIR=`pwd`
+GNU_SIZE=3500 
+DEFAULT_DIR=/usr/bin
+# 'problem' is a flag that indicates whether everything is OK (and thus able
+# to leave the loop), or NOT OK. If not OK, it will force the user to remain
+# in the loop intil everything is OK, and agreed upon by program and user.
+#  The default status of "problem" is true, so that it has to be proven that
+# there is no problem before continuing. -DBE
+
+problem="1"      
+
+df > install.fs
+
+#
+# Install GNU C Compiler.
+# This is accomplished via the following steps:
+#  modify and transfer files into proper directories
+#  run a sample compile for verification
+#  clean up temporary files on request
+#
+echo '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+*******************************************************************
+**                                                               **
+**     GNU C Compiler Installation (version 1.37.1)              **
+**                                                               **
+*******************************************************************
+\n\n\n\n\n\n\n\n\n'
+
+directory=$DEFAULT_DIR
+file_sys=$DEFAULT_DIR
+pwd_fs=$ORGDIR  
+
+# This loop determines the file system of the current working directory.
+#  This information is used later on to insure that the present file system is
+#  not rejected as a possible candidate to store the files (due to a lack of
+#  disk space). If the files are already loaded in, there is enough space...
+#             -DBE
+
+while test ".$tmploop" != "/"
+do
+  case `egrep -c "^$pwd_fs " install.fs` in
+
+      0) if [ "$pwd_fs" != "/" ]
+            then
+               pwd_fs=`dirname $pwd_fs`
+            else
+               echo "problem determining file system of pwd directory\n"
+               exit 255
+         fi
+         ;;
+
+      *) if [ `egrep -c "^$pwd_fs " install.fs` = "1" ]
+           then
+              break
+           else
+              pwd_fs=`dirname $pwd_fs` 
+         fi
+         ;;
+    esac
+  done
+                             
+ if [ `egrep -c "^$pwd_fs " install.fs` = "0" ]
+   then
+      echo "I was not able to determine the specific file system \n "
+      echo "for the present working directory. \n" 
+ fi
+
+echo "\n\n"
+                 
+
+LOOP1="!"
+tmploop="!"
+
+# LOOP1 insures that it knows what directory to put the files in,
+# and that the directory exists and has enough memory -D.B.E.
+
+while test ".$LOOP1" != "/"
+do
+
+#
+# This sub-loop determines the file system of the directory given.
+#
+   while test ".$tmploop" != "/"
+   do
+     case `egrep -c "^$file_sys " install.fs` in
+
+        0) if [ "$file_sys" != "/" ]
+             then
+                 file_sys=`dirname $file_sys`
+             else
+                 echo "problem determining file system of directory"
+                 echo "\n try again with different default directory"
+                 exit 255
+           fi
+           ;;
+
+       *) if [ `egrep -c "^$file_sys " install.fs` = "1" ]
+          then
+            break
+          else 
+            file_sys=`dirname $file_sys`
+          fi
+          ;;   
+     esac
+  done
+echo "\n\n\n"
+
+if [ `egrep -c "^$file_sys " install.fs` = "0" ]
+  then
+     problem="1"                         
+  else
+     problem="0"
+     filesys_size=`egrep "^$file_sys " install.fs | cut -c49-56`
+     if [ "$filesys_size" -lt $GNU_SIZE ]
+     then
+        if [ "$pwd_fs " != "$file_sys " ]
+        then
+           problem="1"
+           echo "There is not enough space in $directory to hold\n"
+           echo "all of the files. Please type in new directory\n"
+        fi 
+     fi
+ fi
+# if the directory that the files were originally loaded into is the
+# same directory that the files will end up in, there is no problem
+# with space (if there files are already in, there is obviously 
+# enough space for them).          -DBE 9/13/90
+
+if [ $ORGDIR = $directory ]
+  then
+     problem="0"
+fi
+
+if [ "$pwd_fs " = "$file_sys " ]
+   then
+      problem="0"
+fi
+
+if [ "$problem" = "1" ]
+  then
+        echo "\n\n          What directory would you like to use?"
+        echo "\n   (it has to contain at least $GNU_SIZE blocks of memory)\n\n"
+        echo '\n\n\n\n\nPlease type in directory, or "q" to quit:'
+        read answer5
+             if [ "$answer5" = "q" -o "$answer5" = "Q" ]
+                then
+                   echo " you have chosen to quit"
+                   exit 255
+                else
+ #
+ # Get new input and verify that it's a "legal" directory format.
+ # If non-existent directory, create one.
+ #
+                   while test ".$tmploop" != "."
+                   do
+                   case $answer5 in
+                        /*)   file_sys=$answer5
+                              directory=$answer5
+                              if test ! -d $directory
+                                  then
+                                  mkdir $directory
+                                  if test $? -ne 0
+                                      then
+                                         echo "can't create $directory"
+                                         exit 255
+                                   fi
+                              fi
+                              break
+                              ;;
+
+                         *)  echo "\n\n\n\nThat is not a directory"
+                             echo "\nPlease type in a directory (or q to quit):"
+                             read answer5
+                             if [ "$answer5" = "q" -o "$answer5" = "Q" ]
+                               then
+                                   echo " you have chosen to quit"
+                                   exit 255
+                             fi
+                             ;; 
+                         esac
+                  done
+             fi
+  else
+
+# current directory is large enough to hold all compiler files
+
+          echo "\n\n\n\n\n\n\n\n\n\n\n\007\007\007
+          The $directory directory is large enough to hold
+          all of the necessary files.
+
+          Would you like to put permanent files into           
+          the directory $directory?                    
+                                                               
+          \n\n\n\nEnter (y,n) for answer (or 'q' to quit): \c"
+          read answer2
+          case "$answer2" in
+
+          n*|N*)  echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\007\007\007
+                  What directory would you like to use?                
+                                                                       
+                   (remember to start directory with a '/')                      
+                   \n\n\n\nEnter preferred directory (or 'q' to quit): \c"
+                   read answer4
+                   if [ "$answer4" = "q" -o "$answer4" = "Q" ]
+                       then
+                            echo " you have chosen to quit"
+                            exit 255
+                   fi
+                   while test ".$tmploop" != "."
+
+           # tmploop verifys that input is in "legal" directory format.
+           # If it is, it creates it (if non-existent) and leaves loop
+           #   otherwise, it waits for "legal" input or "q"
+
+                   do
+                   case $answer4 in
+                        /*)   file_sys=$answer4
+                              directory=$answer4
+                              if test ! -d $directory
+                                  then
+                                  mkdir $directory
+                                  if test $? -ne 0
+                                      then
+                                         echo "can't create $directory"
+                                         exit 255
+                                   fi
+                              fi
+                              break
+                              ;;
+
+                         *)  echo "\n\n\n\nThat is not a directory"
+                             echo "\nPlease type in a directory (or q to quit):"
+                             read answer4
+                             if [ "$answer4" = "q" -o "$answer4" = "Q" ]
+                               then
+                                   echo " you have chosen to quit"
+                                   exit 255
+                             fi
+                             ;; 
+                         esac
+                  done
+                   ;;
+
+         q*|Q*)    echo "you have chosen to quit"
+                   exit 255
+                   ;; 
+
+             *)    break
+                   ;;
+       esac
+   fi
+done
+
+#
+# Compiler script "gcc2081" (also default script for gcc)
+# Modified for adding shell name -- Shawn Islam
+#
+   echo "#!/bin/sh" > $DEFAULT_DIR/gcc2081
+   echo "$directory/gcc-gcc  -B$directory/gcc- -coff \\
+    -m68020 -m68881 -mbitfield -O -fsvs_bitfields \\
+    -fwritable-strings -fcombine-regs -fcaller-saves -pipe \$* " \
+     >> $DEFAULT_DIR/gcc2081
+    chmod 775 $DEFAULT_DIR/gcc2081
+#
+# Compiler script "gcc20" 
+# Modified for adding shell name -- Shawn Islam
+#
+   echo "#!/bin/sh" > $DEFAULT_DIR/gcc20
+   echo "$directory/gcc-gcc -B$directory/gcc- -coff \\
+    -m68020 -mbitfield -O -fsvs_bitfields \\
+    -fwritable-strings -fcombine-regs -fcaller-saves -pipe \$* " \
+     >> $DEFAULT_DIR/gcc20
+    chmod 775 $DEFAULT_DIR/gcc20
+#
+# Compiler script "gcc10"
+# Modified for adding shell name -- Shawn Islam
+#
+   echo "#!/bin/sh" > $DEFAULT_DIR/gcc10
+   echo "$directory/gcc-gcc -B$directory/gcc- -coff \\
+    -mbitfield -O -fsvs_bitfields \\
+    -fwritable-strings -fcombine-regs -fcaller-saves -pipe \$* " \
+     >> $DEFAULT_DIR/gcc10
+    chmod 775 $DEFAULT_DIR/gcc10
+
+#
+# gdb script which points to location of actual gdb file.
+#
+  echo "$directory/gdb \$*" > /usr/bin/gdb
+  chmod 777 /usr/bin/gdb
+
+# This moves the gcc man page to the proper directory.......
+
+mv gcc.1 /usr/catman/u_man/man1/gcc.1
+
+case "$1" in
+
+  "gcc20"|"gcc10") mv $DEFAULT_DIR/$1 $DEFAULT_DIR/gcc
+                   ;;
+                *) mv $DEFAULT_DIR/gcc2081 $DEFAULT_DIR/gcc
+                   ;;
+esac
+
+{
+  trap 'echo "\ninterrupted.  Installation may be incomplete.\n"
+        exit 255' 1 2 3 15
+  echo '\n\n\n\n\n Installing files \c'
+
+#  **********************************************************
+#  Main loop. It goes down a list of files and moves them into 
+#  selected directory
+#  **********************************************************
+
+  while read item
+  do
+    set $item
+    if [ "$1" = "#" ]
+     then
+      continue
+    fi
+
+ chmod 775 $directory
+ chgrp root $directory 
+ chown other $directory
+ mv $1 $directory
+ chown $2 $directory/$1
+ chgrp $3 $directory/$1 
+ chmod $4 $directory/$1
+ echo '.\c'
+
+   done
+  echo'\n'
+
+  exit 0
+} < install.ls 2> /dev/null
+if [ $? -ne 0 ]
+ then
+  exit 255
+fi
+
+echo ' verifying proper set up by testing sample program\n'
+echo ' (this should take about 5 - 10 seconds)\n'
+$DEFAULT_DIR/gcc install.c -o $directory/a.out 
+$directory/a.out > install.tst
+rm $directory/a.out
+ sync;sync;sync
+cmp install.act install.tst > install.result    
+  if (test -s install.result)
+ then
+  echo '\n    **** ERROR: Sample test failed - Installation incorrect ***\n'
+  exit 255
+ else
+    echo "\n\n
+                 ******************************
+                 *  Successful Installation   *
+                 ******************************   \n\n\n\n"
+fi
+
+
+echo "\n\n\n\n\007\007\007
+          Would you like temporary files to be removed?                 
+       \n\n\n\n\nType answer here (y, n): \c"
+       read answer3
+case "$answer3" in
+
+   N*|n*) echo "you will NOT have automatic clean up of files"
+             clean_up=0
+             ;;
+
+       *)    clean_up=1
+             ;;
+esac
+
+
+if [ "$clean_up" = "1" ]
+  then 
+    echo '\n Cleanup of files beginning \c'
+    sync; sync; sync
+    for item in `ls install* `
+    do
+      rm -f $item
+      echo '.\c'
+    done
+ else
+  echo "\n\n No file clean up done. Moving temporary files to $directory \n"
+
+    for item in `ls install* `
+    do
+      mv $item $directory
+      echo '.\c'
+    done
+fi
+echo '\n'

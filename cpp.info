@@ -20,7 +20,7 @@ versions.
 
 Indirect:
 cpp.info-1: 748
-cpp.info-2: 48716
+cpp.info-2: 50556
 
 Tag Table:
 (Indirect)
@@ -32,38 +32,38 @@ Node: Header Uses7992
 Node: Include Syntax9379
 Node: Include Operation12392
 Node: Once-Only14058
-Node: Macros15869
-Node: Simple Macros16781
-Node: Argument Macros19828
-Node: Predefined24918
-Node: Standard Predefined25346
-Node: Nonstandard Predefined29551
-Node: Stringification32833
-Node: Concatenation35672
-Node: Undefining38930
-Node: Redefining39952
-Node: Macro Pitfalls41238
-Node: Misnesting42281
-Node: Macro Parentheses43289
-Node: Swallow Semicolon45144
-Node: Side Effects47032
-Node: Self-Reference48718
-Node: Argument Prescan50967
-Node: Cascaded Macros55931
-Node: Conditionals56952
-Node: Conditional Uses58240
-Node: Conditional Syntax59627
-Node: #if Command60196
-Node: #else Command62447
-Node: #elif Command63094
-Node: Deleted Code64437
-Node: Conditionals-Macros64968
-Node: #error Command68190
-Node: Combining Sources69234
-Node: Other Commands71848
-Node: Output73081
-Node: Invocation74012
-Node: Concept Index79436
-Node: Index80238
+Node: Macros15439
+Node: Simple Macros16351
+Node: Argument Macros19398
+Node: Predefined24500
+Node: Standard Predefined24928
+Node: Nonstandard Predefined29133
+Node: Stringification32418
+Node: Concatenation35257
+Node: Undefining38515
+Node: Redefining39537
+Node: Macro Pitfalls40822
+Node: Misnesting41866
+Node: Macro Parentheses42874
+Node: Swallow Semicolon44728
+Node: Side Effects46617
+Node: Self-Reference48307
+Node: Argument Prescan50558
+Node: Cascaded Macros55521
+Node: Conditionals56542
+Node: Conditional Uses57830
+Node: Conditional Syntax59217
+Node: #if Command59784
+Node: #else Command62035
+Node: #elif Command62679
+Node: Deleted Code64022
+Node: Conditionals-Macros64553
+Node: #error Command67775
+Node: Combining Sources68819
+Node: Other Commands71433
+Node: Output72657
+Node: Invocation73588
+Node: Concept Index78990
+Node: Index79792
 
 End Tag Table

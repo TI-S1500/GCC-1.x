@@ -381,6 +381,10 @@ token types:
 
 state 0
 
+    extdefs	shift  1
+    program	shift  512
+    @1  	shift  2
+
     $   	reduce  1  (program)
     $default	reduce  3  (@1)
 
@@ -390,6 +394,8 @@ state 1
 
     program  ->  extdefs .   (2)
     extdefs  ->  extdefs . @2 extdef   (6)
+
+    @2  	shift  3
 
     $   	reduce  2  (program)
     $default	reduce  5  (@2)
@@ -411,6 +417,14 @@ state 2
     ASM 	shift  12
     TYPEOF	shift  13
     ';' 	shift  14
+    extdef	shift  15
+    datadef	shift  16
+    fndef	shift  17
+    setspecs	shift  18
+    typed_declspecs	shift  19
+    declmods	shift  20
+    typespec	shift  21
+    structsp	shift  22
 
     IDENTIFIER	reduce  93  (setspecs)
     '*' 	[reduce  93  (setspecs)]
@@ -433,6 +447,14 @@ state 3
     ASM 	shift  12
     TYPEOF	shift  13
     ';' 	shift  14
+    extdef	shift  23
+    datadef	shift  16
+    fndef	shift  17
+    setspecs	shift  18
+    typed_declspecs	shift  19
+    declmods	shift  20
+    typespec	shift  21
+    structsp	shift  22
 
     IDENTIFIER	reduce  93  (setspecs)
     '*' 	[reduce  93  (setspecs)]
@@ -491,6 +513,7 @@ state 9
     IDENTIFIER	shift  26
     TYPENAME	shift  27
     '{' 	shift  28
+    identifier	shift  29
 
 
 
@@ -503,6 +526,7 @@ state 10
     IDENTIFIER	shift  26
     TYPENAME	shift  27
     '{' 	shift  30
+    identifier	shift  31
 
 
 
@@ -515,6 +539,7 @@ state 11
     IDENTIFIER	shift  26
     TYPENAME	shift  27
     '{' 	shift  32
+    identifier	shift  33
 
 
 
@@ -576,6 +601,9 @@ state 18
     IDENTIFIER	shift  36
     '*' 	shift  37
     '(' 	shift  38
+    notype_initdecls	shift  39
+    notype_initdcl	shift  40
+    notype_declarator	shift  41
 
 
 
@@ -587,6 +615,7 @@ state 19
     fndef  ->  typed_declspecs . setspecs declarator error   (21)
 
     ';' 	shift  42
+    setspecs	shift  43
 
     $default	reduce  93  (setspecs)
 
@@ -611,6 +640,9 @@ state 20
     UNION	shift  11
     TYPEOF	shift  13
     ';' 	shift  46
+    setspecs	shift  47
+    typespec	shift  48
+    structsp	shift  22
 
     $default	reduce  93  (setspecs)
 
@@ -619,6 +651,8 @@ state 20
 state 21
 
     typed_declspecs  ->  typespec . reserved_declspecs   (98)
+
+    reserved_declspecs	shift  49
 
     $default	reduce  100  (reserved_declspecs)
 
@@ -676,6 +710,8 @@ state 28
 
     structsp  ->  ENUM '{' . @15 enumlist maybecomma_warn '}'   (175)
 
+    @15 	shift  50
+
     $default	reduce  174  (@15)
 
 
@@ -695,6 +731,8 @@ state 30
 
     structsp  ->  STRUCT '{' . component_decl_list '}'   (166)
 
+    component_decl_list	shift  52
+
     $default	reduce  181  (component_decl_list)
 
 
@@ -713,6 +751,8 @@ state 31
 state 32
 
     structsp  ->  UNION '{' . component_decl_list '}'   (170)
+
+    component_decl_list	shift  54
 
     $default	reduce  181  (component_decl_list)
 
@@ -734,6 +774,7 @@ state 34
     extdef  ->  ASM '(' . string ')' ';'   (9)
 
     STRING	shift  56
+    string	shift  57
 
 
 
@@ -763,6 +804,19 @@ state 35
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  73
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    typed_typespecs	shift  80
+    typespec	shift  81
+    structsp	shift  22
+    typename	shift  82
+    nonempty_type_quals	shift  83
 
 
 
@@ -778,6 +832,8 @@ state 37
 
     notype_declarator  ->  '*' . type_quals notype_declarator   (160)
 
+    type_quals	shift  84
+
     $default	reduce  203  (type_quals)
 
 
@@ -789,6 +845,7 @@ state 38
     IDENTIFIER	shift  36
     '*' 	shift  37
     '(' 	shift  38
+    notype_declarator	shift  85
 
 
 
@@ -824,6 +881,8 @@ state 41
     ASM 	shift  89
     '(' 	shift  90
     '[' 	shift  91
+    @7  	shift  92
+    maybeasm	shift  93
 
     error	[reduce  26  (@7)]
     TYPENAME	reduce  26  (@7)
@@ -860,6 +919,11 @@ state 43
     TYPENAME	shift  94
     '*' 	shift  95
     '(' 	shift  96
+    initdecls	shift  97
+    initdcl	shift  98
+    declarator	shift  99
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
 
 
 
@@ -896,12 +960,17 @@ state 47
     IDENTIFIER	shift  36
     '*' 	shift  37
     '(' 	shift  38
+    notype_initdecls	shift  102
+    notype_initdcl	shift  40
+    notype_declarator	shift  103
 
 
 
 state 48
 
     typed_declspecs  ->  declmods typespec . reserved_declspecs   (99)
+
+    reserved_declspecs	shift  104
 
     $default	reduce  100  (reserved_declspecs)
 
@@ -919,6 +988,8 @@ state 49
     ENUM	shift  9
     STRUCT	shift  10
     UNION	shift  11
+    typespecqual_reserved	shift  108
+    structsp	shift  109
 
     $default	reduce  98  (typed_declspecs)
 
@@ -930,12 +1001,17 @@ state 50
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  110
+    enumlist	shift  111
+    enumerator	shift  112
 
 
 
 state 51
 
     structsp  ->  ENUM identifier '{' . @14 enumlist maybecomma_warn '}'   (173)
+
+    @14 	shift  113
 
     $default	reduce  172  (@14)
 
@@ -957,12 +1033,19 @@ state 52
     TYPEOF	shift  13
     ';' 	shift  115
     '}' 	shift  116
+    typed_typespecs	shift  117
+    typespec	shift  81
+    structsp	shift  22
+    component_decl	shift  118
+    nonempty_type_quals	shift  119
 
 
 
 state 53
 
     structsp  ->  STRUCT identifier '{' . @12 component_decl_list '}'   (165)
+
+    @12 	shift  120
 
     $default	reduce  164  (@12)
 
@@ -984,12 +1067,19 @@ state 54
     TYPEOF	shift  13
     ';' 	shift  115
     '}' 	shift  121
+    typed_typespecs	shift  117
+    typespec	shift  81
+    structsp	shift  22
+    component_decl	shift  118
+    nonempty_type_quals	shift  119
 
 
 
 state 55
 
     structsp  ->  UNION identifier '{' . @13 component_decl_list '}'   (169)
+
+    @13 	shift  122
 
     $default	reduce  168  (@13)
 
@@ -1056,6 +1146,10 @@ state 61
     '(' 	shift  125
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  126
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -1078,6 +1172,10 @@ state 62
     '(' 	shift  127
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  128
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -1123,6 +1221,11 @@ state 66
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  129
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -1172,6 +1275,20 @@ state 69
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  131
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    @9  	shift  132
+    string	shift  79
+    typed_typespecs	shift  80
+    typespec	shift  81
+    structsp	shift  22
+    typename	shift  133
+    nonempty_type_quals	shift  83
 
     '{' 	reduce  77  (@9)
 
@@ -1211,6 +1328,11 @@ state 72
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  134
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -1331,6 +1453,8 @@ state 80
     '*' 	shift  160
     '(' 	shift  161
     '[' 	shift  162
+    absdcl	shift  163
+    absdcl1	shift  164
 
     $default	reduce  199  (absdcl)
 
@@ -1339,6 +1463,8 @@ state 80
 state 81
 
     typed_typespecs  ->  typespec . reserved_typespecquals   (107)
+
+    reserved_typespecquals	shift  165
 
     $default	reduce  109  (reserved_typespecquals)
 
@@ -1368,6 +1494,10 @@ state 83
     '*' 	shift  160
     '(' 	shift  161
     '[' 	shift  162
+    typespec	shift  168
+    structsp	shift  22
+    absdcl	shift  169
+    absdcl1	shift  164
 
     $default	reduce  199  (absdcl)
 
@@ -1382,6 +1512,7 @@ state 84
     TYPE_QUAL	shift  170
     '*' 	shift  37
     '(' 	shift  38
+    notype_declarator	shift  171
 
 
 
@@ -1414,6 +1545,10 @@ state 87
     TYPENAME	shift  94
     '*' 	shift  95
     '(' 	shift  96
+    initdcl	shift  173
+    declarator	shift  174
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
 
 
 
@@ -1436,6 +1571,9 @@ state 89
 state 90
 
     notype_declarator  ->  notype_declarator '(' . parmlist_or_identifiers   (158)
+
+    parmlist_or_identifiers	shift  176
+    @30 	shift  177
 
     $default	reduce  275  (@30)
 
@@ -1461,6 +1599,14 @@ state 91
     '~' 	shift  70
     '!' 	shift  71
     ']' 	shift  178
+    unop	shift  72
+    expr	shift  179
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -1477,6 +1623,14 @@ state 92
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    xdecls	shift  181
+    decls	shift  182
+    decl	shift  183
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
+    errstmt	shift  186
 
     error	[reduce  87  (xdecls)]
     '{' 	reduce  87  (xdecls)
@@ -1489,6 +1643,7 @@ state 93
     notype_initdcl  ->  notype_declarator maybeasm . maybe_attribute   (130)
 
     ATTRIBUTE	shift  187
+    maybe_attribute	shift  188
 
     $default	reduce  131  (maybe_attribute)
 
@@ -1507,6 +1662,8 @@ state 95
     after_type_declarator  ->  '*' . type_quals after_type_declarator   (151)
     notype_declarator  ->  '*' . type_quals notype_declarator   (160)
 
+    type_quals	shift  189
+
     $default	reduce  203  (type_quals)
 
 
@@ -1520,6 +1677,8 @@ state 96
     TYPENAME	shift  94
     '*' 	shift  95
     '(' 	shift  96
+    after_type_declarator	shift  190
+    notype_declarator	shift  85
 
 
 
@@ -1550,6 +1709,8 @@ state 99
 
     error	shift  193
     ASM 	shift  89
+    @3  	shift  194
+    maybeasm	shift  195
 
     error	[reduce  18  (@3)]
     TYPENAME	reduce  18  (@3)
@@ -1620,6 +1781,8 @@ state 103
     ASM 	shift  89
     '(' 	shift  90
     '[' 	shift  91
+    @5  	shift  200
+    maybeasm	shift  93
 
     error	[reduce  22  (@5)]
     TYPENAME	reduce  22  (@5)
@@ -1650,6 +1813,8 @@ state 104
     ENUM	shift  9
     STRUCT	shift  10
     UNION	shift  11
+    typespecqual_reserved	shift  108
+    structsp	shift  109
 
     $default	reduce  99  (typed_declspecs)
 
@@ -1712,6 +1877,7 @@ state 111
     enumlist  ->  enumlist . ',' enumerator   (194)
 
     ',' 	shift  202
+    maybecomma_warn	shift  203
 
     $default	reduce  179  (maybecomma_warn)
 
@@ -1731,6 +1897,9 @@ state 113
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  110
+    enumlist	shift  204
+    enumerator	shift  112
 
 
 
@@ -1762,6 +1931,8 @@ state 117
 
     component_decl  ->  typed_typespecs . setspecs components   (184)
 
+    setspecs	shift  205
+
     $default	reduce  93  (setspecs)
 
 
@@ -1787,6 +1958,9 @@ state 119
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    setspecs	shift  207
+    typespec	shift  168
+    structsp	shift  22
 
     TYPENAME	[reduce  93  (setspecs)]
     $default	reduce  93  (setspecs)
@@ -1796,6 +1970,8 @@ state 119
 state 120
 
     structsp  ->  STRUCT identifier '{' @12 . component_decl_list '}'   (165)
+
+    component_decl_list	shift  208
 
     $default	reduce  181  (component_decl_list)
 
@@ -1812,6 +1988,8 @@ state 121
 state 122
 
     structsp  ->  UNION identifier '{' @13 . component_decl_list '}'   (169)
+
+    component_decl_list	shift  209
 
     $default	reduce  181  (component_decl_list)
 
@@ -1862,6 +2040,20 @@ state 125
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  131
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    @9  	shift  132
+    string	shift  79
+    typed_typespecs	shift  80
+    typespec	shift  81
+    structsp	shift  22
+    typename	shift  211
+    nonempty_type_quals	shift  83
 
     '{' 	reduce  77  (@9)
 
@@ -1904,6 +2096,20 @@ state 127
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  131
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    @9  	shift  132
+    string	shift  79
+    typed_typespecs	shift  80
+    typespec	shift  81
+    structsp	shift  22
+    typename	shift  212
+    nonempty_type_quals	shift  83
 
     '{' 	reduce  77  (@9)
 
@@ -1946,6 +2152,7 @@ state 132
     primary  ->  '(' @9 . compstmt ')'   (78)
 
     '{' 	shift  215
+    compstmt	shift  216
 
 
 
@@ -1992,6 +2199,12 @@ state 136
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  218
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2013,6 +2226,12 @@ state 137
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  219
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2034,6 +2253,12 @@ state 138
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  220
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2055,6 +2280,15 @@ state 139
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  221
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    xexpr	shift  222
 
     $default	reduce  264  (xexpr)
 
@@ -2078,6 +2312,12 @@ state 140
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  223
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2099,6 +2339,12 @@ state 141
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  224
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2120,6 +2366,12 @@ state 142
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  225
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2141,6 +2393,12 @@ state 143
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  226
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2162,6 +2420,12 @@ state 144
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  227
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2183,6 +2447,12 @@ state 145
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  228
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2204,6 +2474,12 @@ state 146
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  229
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2225,6 +2501,12 @@ state 147
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  230
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2246,6 +2528,12 @@ state 148
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  231
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2267,6 +2555,12 @@ state 149
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  232
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2288,6 +2582,12 @@ state 150
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  233
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2309,6 +2609,12 @@ state 151
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  234
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2330,6 +2636,12 @@ state 152
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  235
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2351,6 +2663,12 @@ state 153
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  236
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2376,6 +2694,7 @@ state 156
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  237
 
 
 
@@ -2385,6 +2704,7 @@ state 157
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  238
 
 
 
@@ -2406,6 +2726,14 @@ state 158
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    exprlist	shift  239
+    nonnull_exprlist	shift  240
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
     $default	reduce  40  (exprlist)
 
@@ -2429,6 +2757,14 @@ state 159
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  241
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2436,6 +2772,8 @@ state 160
 
     absdcl1  ->  '*' . type_quals absdcl1   (206)
     absdcl1  ->  '*' . type_quals   (207)
+
+    type_quals	shift  242
 
     $default	reduce  203  (type_quals)
 
@@ -2449,6 +2787,9 @@ state 161
     '*' 	shift  160
     '(' 	shift  161
     '[' 	shift  162
+    absdcl1	shift  243
+    parmlist	shift  244
+    @29 	shift  245
 
     $default	reduce  273  (@29)
 
@@ -2474,6 +2815,14 @@ state 162
     '~' 	shift  70
     '!' 	shift  71
     ']' 	shift  246
+    unop	shift  72
+    expr	shift  247
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2509,6 +2858,8 @@ state 165
     ENUM	shift  9
     STRUCT	shift  10
     UNION	shift  11
+    typespecqual_reserved	shift  250
+    structsp	shift  109
 
     $default	reduce  107  (typed_typespecs)
 
@@ -2533,6 +2884,8 @@ state 167
 state 168
 
     typed_typespecs  ->  nonempty_type_quals typespec . reserved_typespecquals   (108)
+
+    reserved_typespecquals	shift  251
 
     $default	reduce  109  (reserved_typespecquals)
 
@@ -2590,6 +2943,7 @@ state 174
     initdcl  ->  declarator . maybeasm maybe_attribute   (127)
 
     ASM 	shift  89
+    maybeasm	shift  195
 
     $default	reduce  123  (maybeasm)
 
@@ -2600,6 +2954,7 @@ state 175
     maybeasm  ->  ASM '(' . string ')'   (124)
 
     STRING	shift  56
+    string	shift  252
 
 
 
@@ -2625,6 +2980,15 @@ state 177
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    typed_declspecs	shift  255
+    declmods	shift  256
+    typespec	shift  21
+    structsp	shift  22
+    parmlist_or_identifiers_1	shift  257
+    parmlist_2	shift  258
+    parms	shift  259
+    parm	shift  260
+    identifiers	shift  261
 
     ')' 	reduce  282  (parmlist_2)
 
@@ -2658,6 +3022,8 @@ state 181
 
     fndef  ->  setspecs notype_declarator @7 xdecls . @8 compstmt_or_error   (28)
 
+    @8  	shift  264
+
     $default	reduce  27  (@8)
 
 
@@ -2675,6 +3041,11 @@ state 182
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    decl	shift  265
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
 
     $default	reduce  88  (xdecls)
 
@@ -2686,6 +3057,7 @@ state 183
     decls  ->  decl . errstmt   (92)
 
     error	shift  180
+    errstmt	shift  266
 
     error	[reduce  89  (decls)]
     IDENTIFIER	reduce  89  (decls)
@@ -2734,6 +3106,7 @@ state 184
     decl  ->  typed_declspecs . ';'   (96)
 
     ';' 	shift  267
+    setspecs	shift  268
 
     $default	reduce  93  (setspecs)
 
@@ -2756,6 +3129,9 @@ state 185
     UNION	shift  11
     TYPEOF	shift  13
     ';' 	shift  269
+    setspecs	shift  270
+    typespec	shift  48
+    structsp	shift  22
 
     $default	reduce  93  (setspecs)
 
@@ -2799,6 +3175,8 @@ state 189
     TYPE_QUAL	shift  170
     '*' 	shift  95
     '(' 	shift  96
+    after_type_declarator	shift  273
+    notype_declarator	shift  171
 
 
 
@@ -2831,6 +3209,10 @@ state 192
     TYPENAME	shift  94
     '*' 	shift  95
     '(' 	shift  96
+    initdcl	shift  275
+    declarator	shift  174
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
 
 
 
@@ -2855,6 +3237,14 @@ state 194
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    xdecls	shift  276
+    decls	shift  182
+    decl	shift  183
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
+    errstmt	shift  186
 
     error	[reduce  87  (xdecls)]
     '{' 	reduce  87  (xdecls)
@@ -2867,6 +3257,7 @@ state 195
     initdcl  ->  declarator maybeasm . maybe_attribute   (127)
 
     ATTRIBUTE	shift  187
+    maybe_attribute	shift  277
 
     $default	reduce  131  (maybe_attribute)
 
@@ -2875,6 +3266,9 @@ state 195
 state 196
 
     after_type_declarator  ->  after_type_declarator '(' . parmlist_or_identifiers   (148)
+
+    parmlist_or_identifiers	shift  278
+    @30 	shift  177
 
     $default	reduce  275  (@30)
 
@@ -2900,6 +3294,14 @@ state 197
     '~' 	shift  70
     '!' 	shift  71
     ']' 	shift  279
+    unop	shift  72
+    expr	shift  280
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2932,6 +3334,14 @@ state 200
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    xdecls	shift  281
+    decls	shift  182
+    decl	shift  183
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
+    errstmt	shift  186
 
     error	[reduce  87  (xdecls)]
     '{' 	reduce  87  (xdecls)
@@ -2956,6 +3366,12 @@ state 201
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  282
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -2966,6 +3382,8 @@ state 202
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  110
+    enumerator	shift  283
 
     $default	reduce  180  (maybecomma_warn)
 
@@ -2985,6 +3403,7 @@ state 204
     enumlist  ->  enumlist . ',' enumerator   (194)
 
     ',' 	shift  202
+    maybecomma_warn	shift  285
 
     $default	reduce  179  (maybecomma_warn)
 
@@ -2999,6 +3418,11 @@ state 205
     ':' 	shift  286
     '*' 	shift  95
     '(' 	shift  96
+    declarator	shift  287
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
+    components	shift  288
+    component_declarator	shift  289
 
     $default	reduce  187  (components)
 
@@ -3021,6 +3445,11 @@ state 207
     ':' 	shift  286
     '*' 	shift  95
     '(' 	shift  96
+    declarator	shift  287
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
+    components	shift  290
+    component_declarator	shift  289
 
     $default	reduce  187  (components)
 
@@ -3042,6 +3471,11 @@ state 208
     TYPEOF	shift  13
     ';' 	shift  115
     '}' 	shift  291
+    typed_typespecs	shift  117
+    typespec	shift  81
+    structsp	shift  22
+    component_decl	shift  118
+    nonempty_type_quals	shift  119
 
 
 
@@ -3061,6 +3495,11 @@ state 209
     TYPEOF	shift  13
     ';' 	shift  115
     '}' 	shift  292
+    typed_typespecs	shift  117
+    typespec	shift  81
+    structsp	shift  22
+    component_decl	shift  118
+    nonempty_type_quals	shift  119
 
 
 
@@ -3112,6 +3551,7 @@ state 215
     compstmt  ->  '{' . pushlevel stmts '}'   (226)
 
     '}' 	shift  295
+    pushlevel	shift  296
 
     $default	reduce  220  (pushlevel)
 
@@ -3145,6 +3585,11 @@ state 217
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  298
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  299
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -3796,6 +4241,7 @@ state 242
     '*' 	shift  160
     '(' 	shift  161
     '[' 	shift  162
+    absdcl1	shift  303
 
     $default	reduce  207  (absdcl1)
 
@@ -3835,6 +4281,14 @@ state 245
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    typed_declspecs	shift  255
+    declmods	shift  256
+    typespec	shift  21
+    structsp	shift  22
+    parmlist_1	shift  306
+    parmlist_2	shift  307
+    parms	shift  259
+    parm	shift  260
 
     ')' 	reduce  282  (parmlist_2)
 
@@ -3860,6 +4314,9 @@ state 248
 
     absdcl1  ->  absdcl1 '(' . parmlist   (208)
 
+    parmlist	shift  309
+    @29 	shift  245
+
     $default	reduce  273  (@29)
 
 
@@ -3884,6 +4341,14 @@ state 249
     '~' 	shift  70
     '!' 	shift  71
     ']' 	shift  310
+    unop	shift  72
+    expr	shift  311
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -3905,6 +4370,8 @@ state 251
     ENUM	shift  9
     STRUCT	shift  10
     UNION	shift  11
+    typespecqual_reserved	shift  250
+    structsp	shift  109
 
     $default	reduce  108  (typed_typespecs)
 
@@ -3947,6 +4414,10 @@ state 255
     '*' 	shift  315
     '(' 	shift  316
     '[' 	shift  162
+    parm_declarator	shift  317
+    notype_declarator	shift  318
+    absdcl	shift  319
+    absdcl1	shift  164
 
     $default	reduce  199  (absdcl)
 
@@ -3972,6 +4443,11 @@ state 256
     '*' 	shift  320
     '(' 	shift  316
     '[' 	shift  162
+    typespec	shift  48
+    notype_declarator	shift  321
+    structsp	shift  22
+    absdcl	shift  322
+    absdcl1	shift  164
 
     $default	reduce  199  (absdcl)
 
@@ -4045,6 +4521,8 @@ state 264
 
     error	shift  327
     '{' 	shift  215
+    compstmt_or_error	shift  328
+    compstmt	shift  329
 
 
 
@@ -4080,6 +4558,11 @@ state 268
     TYPENAME	shift  94
     '*' 	shift  95
     '(' 	shift  96
+    initdecls	shift  330
+    initdcl	shift  98
+    declarator	shift  174
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
 
 
 
@@ -4098,6 +4581,9 @@ state 270
     IDENTIFIER	shift  36
     '*' 	shift  37
     '(' 	shift  38
+    notype_initdecls	shift  331
+    notype_initdcl	shift  40
+    notype_declarator	shift  332
 
 
 
@@ -4112,6 +4598,8 @@ state 271
 state 272
 
     notype_initdcl  ->  notype_declarator maybeasm maybe_attribute '=' . @11 init   (129)
+
+    @11 	shift  334
 
     $default	reduce  128  (@11)
 
@@ -4150,6 +4638,8 @@ state 275
 state 276
 
     fndef  ->  typed_declspecs setspecs declarator @3 xdecls . @4 compstmt_or_error   (20)
+
+    @4  	shift  335
 
     $default	reduce  19  (@4)
 
@@ -4193,6 +4683,8 @@ state 280
 state 281
 
     fndef  ->  declmods setspecs notype_declarator @5 xdecls . @6 compstmt_or_error   (24)
+
+    @6  	shift  338
 
     $default	reduce  23  (@6)
 
@@ -4283,6 +4775,12 @@ state 286
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  340
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -4293,6 +4791,7 @@ state 287
 
     ATTRIBUTE	shift  187
     ':' 	shift  341
+    maybe_attribute	shift  342
 
     $default	reduce  131  (maybe_attribute)
 
@@ -4411,6 +4910,26 @@ state 296
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    decls	shift  362
+    decl	shift  183
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
+    stmts	shift  363
+    errstmt	shift  186
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  366
 
 
 
@@ -4442,6 +4961,14 @@ state 298
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  370
+    initlist	shift  371
 
 
 
@@ -4471,6 +4998,12 @@ state 300
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  372
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -4599,6 +5132,8 @@ state 315
     absdcl1  ->  '*' . type_quals absdcl1   (206)
     absdcl1  ->  '*' . type_quals   (207)
 
+    type_quals	shift  376
+
     $default	reduce  203  (type_quals)
 
 
@@ -4613,6 +5148,10 @@ state 316
     '*' 	shift  320
     '(' 	shift  316
     '[' 	shift  162
+    notype_declarator	shift  85
+    absdcl1	shift  243
+    parmlist	shift  244
+    @29 	shift  245
 
     $default	reduce  273  (@29)
 
@@ -4659,6 +5198,8 @@ state 320
     notype_declarator  ->  '*' . type_quals notype_declarator   (160)
     absdcl1  ->  '*' . type_quals absdcl1   (206)
     absdcl1  ->  '*' . type_quals   (207)
+
+    type_quals	shift  379
 
     $default	reduce  203  (type_quals)
 
@@ -4708,6 +5249,11 @@ state 324
     STRUCT	shift  10
     UNION	shift  11
     TYPEOF	shift  13
+    typed_declspecs	shift  255
+    declmods	shift  256
+    typespec	shift  21
+    structsp	shift  22
+    parm	shift  381
 
 
 
@@ -4732,6 +5278,7 @@ state 327
     compstmt_or_error  ->  error . compstmt   (222)
 
     '{' 	shift  215
+    compstmt	shift  383
 
 
 
@@ -4782,6 +5329,7 @@ state 332
     ASM 	shift  89
     '(' 	shift  90
     '[' 	shift  91
+    maybeasm	shift  93
 
     $default	reduce  123  (maybeasm)
 
@@ -4792,6 +5340,8 @@ state 333
     maybe_attribute  ->  ATTRIBUTE '(' '(' . attribute_list ')' ')'   (132)
 
     IDENTIFIER	shift  386
+    attribute_list	shift  387
+    attrib	shift  388
 
 
 
@@ -4815,6 +5365,13 @@ state 334
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  389
 
 
 
@@ -4824,12 +5381,16 @@ state 335
 
     error	shift  327
     '{' 	shift  215
+    compstmt_or_error	shift  390
+    compstmt	shift  329
 
 
 
 state 336
 
     initdcl  ->  declarator maybeasm maybe_attribute '=' . @10 init   (126)
+
+    @10 	shift  391
 
     $default	reduce  125  (@10)
 
@@ -4849,6 +5410,8 @@ state 338
 
     error	shift  327
     '{' 	shift  215
+    compstmt_or_error	shift  392
+    compstmt	shift  329
 
 
 
@@ -4921,6 +5484,12 @@ state 341
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  393
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -4941,6 +5510,10 @@ state 343
     ':' 	shift  286
     '*' 	shift  95
     '(' 	shift  96
+    declarator	shift  287
+    after_type_declarator	shift  100
+    notype_declarator	shift  101
+    component_declarator	shift  394
 
 
 
@@ -4986,6 +5559,8 @@ state 348
 
     stmt  ->  WHILE . @18 '(' expr ')' @19 stmt   (236)
 
+    @18 	shift  397
+
     $default	reduce  234  (@18)
 
 
@@ -4993,6 +5568,8 @@ state 348
 state 349
 
     stmt  ->  DO . @20 stmt WHILE @21 '(' expr ')' ';'   (239)
+
+    @20 	shift  398
 
     $default	reduce  237  (@20)
 
@@ -5032,6 +5609,14 @@ state 352
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  401
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -5079,6 +5664,14 @@ state 356
     ';' 	shift  405
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  406
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -5088,6 +5681,7 @@ state 357
 
     IDENTIFIER	shift  26
     TYPENAME	shift  27
+    identifier	shift  407
 
 
 
@@ -5099,6 +5693,7 @@ state 358
     stmt  ->  ASM . maybe_type_qual '(' string ':' asm_operands ':' asm_operands ':' asm_clobbers ')' ';'   (257)
 
     TYPE_QUAL	shift  408
+    maybe_type_qual	shift  409
 
     $default	reduce  262  (maybe_type_qual)
 
@@ -5169,6 +5764,25 @@ state 362
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    decl	shift  265
+    typed_declspecs	shift  184
+    declmods	shift  185
+    typespec	shift  21
+    structsp	shift  22
+    stmts	shift  412
+    xstmts	shift  413
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  366
 
     $default	reduce  217  (xstmts)
 
@@ -5211,6 +5825,19 @@ state 363
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    errstmt	shift  415
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  416
 
 
 
@@ -5272,6 +5899,14 @@ state 368
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  370
+    initlist	shift  419
 
 
 
@@ -5332,6 +5967,7 @@ state 371
     initlist  ->  initlist . ',' init   (144)
 
     ',' 	shift  420
+    maybecomma	shift  421
 
     $default	reduce  177  (maybecomma)
 
@@ -5416,6 +6052,9 @@ state 376
     '*' 	shift  315
     '(' 	shift  316
     '[' 	shift  162
+    parm_declarator	shift  422
+    notype_declarator	shift  171
+    absdcl1	shift  303
 
     $default	reduce  207  (absdcl1)
 
@@ -5424,6 +6063,9 @@ state 376
 state 377
 
     parm_declarator  ->  parm_declarator '(' . parmlist_or_identifiers   (153)
+
+    parmlist_or_identifiers	shift  423
+    @30 	shift  177
 
     $default	reduce  275  (@30)
 
@@ -5449,6 +6091,14 @@ state 378
     '~' 	shift  70
     '!' 	shift  71
     ']' 	shift  424
+    unop	shift  72
+    expr	shift  425
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -5464,6 +6114,8 @@ state 379
     '*' 	shift  320
     '(' 	shift  316
     '[' 	shift  162
+    notype_declarator	shift  171
+    absdcl1	shift  303
 
     $default	reduce  207  (absdcl1)
 
@@ -5583,6 +6235,13 @@ state 391
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  429
 
 
 
@@ -5633,6 +6292,7 @@ state 393
     '*' 	shift  151
     '/' 	shift  152
     '%' 	shift  153
+    maybe_attribute	shift  430
 
     $default	reduce  131  (maybe_attribute)
 
@@ -5672,6 +6332,14 @@ state 396
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  431
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -5716,6 +6384,18 @@ state 398
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  433
 
 
 
@@ -5737,6 +6417,15 @@ state 399
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  221
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    xexpr	shift  434
 
     $default	reduce  264  (xexpr)
 
@@ -5760,6 +6449,14 @@ state 400
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  435
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -5774,6 +6471,8 @@ state 401
 state 402
 
     stmt  ->  DEFAULT ':' . @27 stmt   (249)
+
+    @27 	shift  437
 
     $default	reduce  248  (@27)
 
@@ -5842,6 +6541,8 @@ state 410
 
     stmt  ->  identifier ':' . @28 stmt   (260)
 
+    @28 	shift  441
+
     $default	reduce  259  (@28)
 
 
@@ -5890,6 +6591,19 @@ state 412
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    errstmt	shift  415
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  416
 
     '}' 	[reduce  218  (xstmts)]
 
@@ -5930,6 +6644,8 @@ state 416
 state 417
 
     stmt  ->  simple_if ELSE . @17 stmt   (232)
+
+    @17 	shift  443
 
     $default	reduce  231  (@17)
 
@@ -5975,6 +6691,13 @@ state 420
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  446
 
     '}' 	reduce  178  (maybecomma)
 
@@ -6033,6 +6756,7 @@ state 426
 
     IDENTIFIER	shift  254
     CONSTANT	shift  449
+    identifiers	shift  450
 
 
 
@@ -6049,6 +6773,7 @@ state 428
     attribute_list  ->  attribute_list ',' . attrib   (134)
 
     IDENTIFIER	shift  386
+    attrib	shift  452
 
 
 
@@ -6094,6 +6819,14 @@ state 432
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  454
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -6124,6 +6857,8 @@ state 435
 state 436
 
     stmt  ->  CASE expr ':' . @26 stmt   (247)
+
+    @26 	shift  458
 
     $default	reduce  246  (@26)
 
@@ -6162,6 +6897,18 @@ state 437
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  459
 
 
 
@@ -6189,6 +6936,7 @@ state 440
     stmt  ->  ASM maybe_type_qual '(' . string ':' asm_operands ':' asm_operands ':' asm_clobbers ')' ';'   (257)
 
     STRING	shift  56
+    string	shift  460
 
 
 
@@ -6225,6 +6973,18 @@ state 441
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  461
 
 
 
@@ -6269,6 +7029,18 @@ state 443
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  462
 
 
 
@@ -6302,6 +7074,13 @@ state 445
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  368
+    unop	shift  72
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  369
+    primary	shift  78
+    string	shift  79
+    init	shift  446
 
 
 
@@ -6367,6 +7146,8 @@ state 453
 
     simple_if  ->  IF '(' expr ')' . @16 stmt   (228)
 
+    @16 	shift  466
+
     $default	reduce  227  (@16)
 
 
@@ -6383,6 +7164,8 @@ state 455
 
     stmt  ->  DO @20 stmt WHILE . @21 '(' expr ')' ';'   (239)
 
+    @21 	shift  468
+
     $default	reduce  238  (@21)
 
 
@@ -6391,6 +7174,8 @@ state 456
 
     stmt  ->  FOR '(' xexpr ';' . @22 xexpr ';' @23 xexpr ')' @24 stmt   (243)
 
+    @22 	shift  469
+
     $default	reduce  240  (@22)
 
 
@@ -6398,6 +7183,8 @@ state 456
 state 457
 
     stmt  ->  SWITCH '(' expr ')' . @25 stmt   (245)
+
+    @25 	shift  470
 
     $default	reduce  244  (@25)
 
@@ -6436,6 +7223,18 @@ state 458
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  471
 
 
 
@@ -6534,12 +7333,26 @@ state 466
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  474
 
 
 
 state 467
 
     stmt  ->  WHILE @18 '(' expr ')' . @19 stmt   (236)
+
+    @19 	shift  475
 
     $default	reduce  235  (@19)
 
@@ -6571,6 +7384,15 @@ state 469
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  221
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    xexpr	shift  477
 
     $default	reduce  264  (xexpr)
 
@@ -6609,6 +7431,18 @@ state 470
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  478
 
 
 
@@ -6627,6 +7461,9 @@ state 472
     stmt  ->  ASM maybe_type_qual '(' string ':' . asm_operands ':' asm_operands ':' asm_clobbers ')' ';'   (257)
 
     STRING	shift  479
+    asm_operands	shift  480
+    nonnull_asm_operands	shift  481
+    asm_operand	shift  482
 
     $default	reduce  266  (asm_operands)
 
@@ -6681,6 +7518,18 @@ state 475
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  484
 
 
 
@@ -6702,6 +7551,14 @@ state 476
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  485
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -6787,6 +7644,8 @@ state 486
 
     stmt  ->  FOR '(' xexpr ';' @22 xexpr ';' . @23 xexpr ')' @24 stmt   (243)
 
+    @23 	shift  492
+
     $default	reduce  241  (@23)
 
 
@@ -6809,6 +7668,14 @@ state 487
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  493
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
 
 
 
@@ -6818,6 +7685,9 @@ state 488
     stmt  ->  ASM maybe_type_qual '(' string ':' asm_operands ':' . asm_operands ':' asm_clobbers ')' ';'   (257)
 
     STRING	shift  479
+    asm_operands	shift  494
+    nonnull_asm_operands	shift  481
+    asm_operand	shift  482
 
     $default	reduce  266  (asm_operands)
 
@@ -6836,6 +7706,7 @@ state 490
     nonnull_asm_operands  ->  nonnull_asm_operands ',' . asm_operand   (269)
 
     STRING	shift  479
+    asm_operand	shift  496
 
 
 
@@ -6865,6 +7736,15 @@ state 492
     '(' 	shift  69
     '~' 	shift  70
     '!' 	shift  71
+    unop	shift  72
+    expr	shift  221
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    xexpr	shift  498
 
     $default	reduce  264  (xexpr)
 
@@ -6933,6 +7813,8 @@ state 500
     stmt  ->  ASM maybe_type_qual '(' string ':' asm_operands ':' asm_operands ':' . asm_clobbers ')' ';'   (257)
 
     STRING	shift  56
+    string	shift  503
+    asm_clobbers	shift  504
 
 
 
@@ -6947,6 +7829,8 @@ state 501
 state 502
 
     stmt  ->  FOR '(' xexpr ';' @22 xexpr ';' @23 xexpr ')' . @24 stmt   (243)
+
+    @24 	shift  506
 
     $default	reduce  242  (@24)
 
@@ -7014,6 +7898,18 @@ state 506
     '~' 	shift  70
     '!' 	shift  71
     '{' 	shift  215
+    identifier	shift  360
+    unop	shift  72
+    expr	shift  361
+    nonnull_exprlist	shift  74
+    unary_expr	shift  75
+    cast_expr	shift  76
+    expr_no_commas	shift  77
+    primary	shift  78
+    string	shift  79
+    compstmt	shift  364
+    simple_if	shift  365
+    stmt	shift  509
 
 
 
@@ -7030,6 +7926,7 @@ state 508
     asm_clobbers  ->  asm_clobbers ',' . string   (272)
 
     STRING	shift  56
+    string	shift  511
 
 
 

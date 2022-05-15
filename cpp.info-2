@@ -20,62 +20,6 @@ versions.
 
 
 
-File: cpp.info,  Node: Self-Reference,  Next: Argument Prescan,  Prev: Side Effects,  Up: Macro Pitfalls
-
-Self-Referential Macros
-.......................
-
- A "self-referential" macro is one whose name appears in its definition.
-A special feature of ANSI Standard C is that the self-reference is
-not considered a macro call.  It is passed into the preprocessor
-output unchanged.
-
-Let's consider an example:
-
-     #define foo (4 + foo)
-
-where `foo' is also a variable in your program.
-
-Following the ordinary rules, each reference to `foo' will expand
-into `(4 + foo)'; then this will be rescanned and will expand into
-`(4 + (4 + foo))'; and so on until it causes a fatal error (memory
-full) in the preprocessor.
-
-However, the special rule about self-reference cuts this process
-short after one step, at `(4 + foo)'.  Therefore, this macro
-definition has the possibly useful effect of causing the program to
-add 4 to the value of `foo' wherever `foo' is referred to.
-
-In most cases, it is a bad idea to take advantage of this feature.  A
-person reading the program who sees that `foo' is a variable will not
-expect that it is a macro as well.  The reader will come across the
-identifier `foo' in the program and think its value should be that of
-the variable `foo', whereas in fact the value is four greater.
-
-The special rule for self-reference applies also to "indirect"
-self-reference.  This is the case where a macro X expands to use a
-macro `y', and `y''s expansion refers to the macro `x'.  The
-resulting reference to `x' comes indirectly from the expansion of
-`x', so it is a self-reference and is not further expanded.  Thus,
-after
-
-     #define x (4 + y)
-     #define y (2 * x)
-
-`x' would expand into `(4 + (2 * x))'.  Clear?
-
-But suppose `y' is used elsewhere, not from the definition of `x'. 
-Then the use of `x' in the expansion of `y' is not a self-reference
-because `x' is not ``in progress''.  So it does expand.  However, the
-expansion of `x' contains a reference to `y', and that is an indirect
-self-reference now because `y' is ``in progress''.  The result is
-that `y' expands to `(2 * (4 + y))'.
-
-It is not clear that this behavior would ever be useful, but it is
-specified by the ANSI C standard, so you need to understand it.
-
-
-
 File: cpp.info,  Node: Argument Prescan,  Next: Cascaded Macros,  Prev: Self-Reference,  Up: Macro Pitfalls
 
 Separate Expansion of Macro Arguments
@@ -201,8 +145,8 @@ is that the argument of `xstr' is expanded at prescan (because `xstr'
 does not specify stringification or concatenation of the argument). 
 The result of prescan then forms the actual argument for `str'. 
 `str' uses its argument without prescan because it performs
-stringification; but it cannot prevent or undo the prescanning
-already done by `xstr'.
+strigification; but it cannot prevent or undo the prescanning already
+done by `xstr'.
 
 
 
@@ -301,14 +245,14 @@ will not need to use preprocessor conditionals.
 
 
 
-File: cpp.info,  Node: Conditional Syntax,  Next: Deleted Code,  Prev: Conditional Uses,  Up: Conditionals
+File: cpp.info,  Node: Conditional Syntax,  Next: Conditionals-Macros,  Prev: Conditional Uses,  Up: Conditionals
 
 Syntax of Conditionals
 ----------------------
 
 A conditional in the C preprocessor begins with a "conditional
-command": `#if', `#ifdef' or `#ifndef'.  *Note Conditionals-Macros::,
-for info on `#ifdef' and `#ifndef'; only `#if' is explained here.
+command": `#if', `#ifdef' or `#ifndef'.*Note Conditionals::, for info
+on `#ifdef' and `#ifndef'; only `#if' is explained here.
 
 * Menu:
 
@@ -377,8 +321,8 @@ File: cpp.info,  Node: #else Command,  Next: #elif Command,  Prev: #if Command, 
 The `#else' Command
 ...................
 
- The `#else' command can be added to a conditional to provide
-alternative text to be used if the condition is false.  This looks like
+ The `#else' command can be added a conditional to provide alternative
+text to be used if the condition is false.  This looks like
 
      #if EXPRESSION
      TEXT-IF-TRUE
@@ -621,7 +565,7 @@ File: cpp.info,  Node: Other Commands,  Next: Output,  Prev: Combining Sources, 
 Miscellaneous Preprocessor Commands
 ===================================
 
-This section describes three additional preprocessor commands.  They
+This section describes three additional preprocesor commands.  They
 are not very useful, but are mentioned for completeness.
 
 The "null command" consists of a `#' followed by a Newline, with only
@@ -637,10 +581,10 @@ arbitrary implementation-defined effect.  In the GNU C preprocessor,
 `#pragma' commands are ignored, except for `#pragma once' (*note
 Once-Only::.).
 
-The `#ident' command is supported for compatibility with certain
-other systems.  It is followed by a line of text.  On certain
-systems, the text is copied into a special place in the object file;
-on most systems, the text is ignored and this directive has no effect.
+The `#ident' is supported for compatibility with certain other
+systems.  It is followed by a line of text.  On certain systems, the
+text is copied into a special place in the object file; on most
+systems, the text is ignored and this directive has no effect.
 
 
 
@@ -670,7 +614,7 @@ source file at the end of an included file.  It is absent otherwise.
 
 
 
-File: cpp.info,  Node: Invocation,  Next: Concept Index,  Prev: Output,  Up: Top
+File: cpp.info,  Node: Invocation,  Prev: Output,  Up: Top
 
 Invoking the C Preprocessor
 ===========================
@@ -889,36 +833,36 @@ Node: Header Uses7992
 Node: Include Syntax9379
 Node: Include Operation12392
 Node: Once-Only14058
-Node: Macros15869
-Node: Simple Macros16781
-Node: Argument Macros19828
-Node: Predefined24918
-Node: Standard Predefined25346
-Node: Nonstandard Predefined29551
-Node: Stringification32833
-Node: Concatenation35672
-Node: Undefining38930
-Node: Redefining39952
-Node: Macro Pitfalls41238
-Node: Misnesting42281
-Node: Macro Parentheses43289
-Node: Swallow Semicolon45144
-Node: Side Effects47032
-Node: Self-Reference48718
-Node: Argument Prescan50967
-Node: Cascaded Macros55931
-Node: Conditionals56952
-Node: Conditional Uses58240
-Node: Conditional Syntax59627
-Node: #if Command60196
-Node: #else Command62447
-Node: #elif Command63094
-Node: Deleted Code64437
-Node: Conditionals-Macros64968
-Node: #error Command68190
-Node: Combining Sources69234
-Node: Other Commands71848
-Node: Output73081
-Node: Invocation74012
-Node: Concept Index79436
-Node: Index80238
+Node: Macros15439
+Node: Simple Macros16351
+Node: Argument Macros19398
+Node: Predefined24500
+Node: Standard Predefined24928
+Node: Nonstandard Predefined29133
+Node: Stringification32418
+Node: Concatenation35257
+Node: Undefining38515
+Node: Redefining39537
+Node: Macro Pitfalls40822
+Node: Misnesting41866
+Node: Macro Parentheses42874
+Node: Swallow Semicolon44728
+Node: Side Effects46617
+Node: Self-Reference48307
+Node: Argument Prescan50558
+Node: Cascaded Macros55521
+Node: Conditionals56542
+Node: Conditional Uses57830
+Node: Conditional Syntax59217
+Node: #if Command59784
+Node: #else Command62035
+Node: #elif Command62679
+Node: Deleted Code64022
+Node: Conditionals-Macros64553
+Node: #error Command67775
+Node: Combining Sources68819
+Node: Other Commands71433
+Node: Output72657
+Node: Invocation73588
+Node: Concept Index78990
+Node: Index79792

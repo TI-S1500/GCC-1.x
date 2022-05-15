@@ -1,0 +1,89 @@
+
+/* This file contain all the fix documentation that has been done
+   on the compiler since the last release  */
+
+/* ALL THESE MODIFICATIONS ARE MADE BY: TEXAS INSTRUMENTS INC.   */
+
+
+1. Fix the GNU C preprocessor so that it can handle more
+   than nine level of nesting.
+
+2. Fix the GNU C Compiler so that it does comparison of double successfully
+
+3. Added #ident directive to the compiler and preprocessor
+
+4. Added traditional style preprocessing of K&R by GNU C Compiler. This
+   compiler will still follow the ANSI C rules if -ansi option is
+   given and it will not allow traditional style preprocessing on this
+   case.
+
+5. Fix the m68k.md file or md file so it generate jbsr instruction
+   for 68020 or jsr for 68010 on TI S1500. This eliminate the need
+   of modifying the insn-output.c file every time the compiler is
+   built.
+
+6. Added a option -NOIDENT to the Compiler so that the compiler
+   will throw out the #ident directive. The GNU C Compiler does not
+   throw out #ident by default.
+
+7. Added a option call -SLINK to suppress the link warning message
+   only. It will not suppress linking. Only thing it suppresses is
+   the warning message :
+    warning:linker input file unused since linking not done
+
+8. Fixed the problem of ignored volatile. If a variable declared
+   volatile it is treated as volatile.
+      module: c-decl.c , c-expr.c
+
+9. If a function return type declared volatile it used to
+   generate bad code. The function of volatile would
+   never return. The problem is fixed. 
+     module: c-decl.c
+
+10. A function pointer declared volatile used to generate
+    bad code. The problem is fixed.
+     module: c-decl.c
+
+11. The storage allocation for 68010 has been changed to put
+    character strings on even boundary. The 68020 code generation
+    remain unchanged.
+     module: varasm.c
+
+12. Fix the GNU C compiler to handle the smallest 2's complement number 
+    -2147483648 on S1500.
+      c-pares.y (yylex) and tree.c
+
+13.  Make the compiler generate a nop instruction before the following
+   floating point instructions: 
+
+   fseq      fsne   fsgt    fslt  fsge   fsle
+ 
+
+   config/m68k.md
+
+
+14. Added the following linker options to the compiler:
+
+  -a -f -m -VS -V -Z
+
+   Note all these options should be used as directed by the System V
+   linker manual.
+
+    gcc.c
+
+
+15. Added #pragma EXTENSIONS directive to the compiler for eliminating the
+    warning messages given by the compiler when using GNU C extensions.
+    (Requested by Software QIT)
+
+   NOTE: IF YOU ARE USING ANY GNU C EXTENSIONS AS DESCRIBED IN GNU C
+         USER MANUAL CHAPTER 6, YOU WILL GET A WARNING MESSAGE. TO ELIMINATE
+         THE WARNING MESSAGE ADD THE FOLLOWING AT THE TOP OF YOUR FILE:
+
+         #pragma EXTENSIONS
+
+   THIS IS JUST A WAY TO DOCUMENT THAT YOU ARE USING GNU C EXTENSION.
+   
+
+
+

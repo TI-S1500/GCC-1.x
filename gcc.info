@@ -11,123 +11,120 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 Indirect:
-gcc.info-1: 1188
-gcc.info-2: 21773
-gcc.info-3: 57280
-gcc.info-4: 105875
-gcc.info-5: 150630
-gcc.info-6: 200589
-gcc.info-7: 249141
-gcc.info-8: 293888
-gcc.info-9: 341967
-gcc.info-10: 391135
+gcc.info-1: 1081
+gcc.info-2: 17920
+gcc.info-3: 53544
+gcc.info-4: 102794
+gcc.info-5: 145361
+gcc.info-6: 195312
+gcc.info-7: 243794
+gcc.info-8: 288021
+gcc.info-9: 336329
+gcc.info-10: 384929
 
 Tag Table:
 (Indirect)
-Node: Top1190
-Node: Copying2494
-Node: Contributors15836
-Node: Boycott18035
-Node: Options21775
-Node: Installation57282
-Node: Other Dir73703
-Node: Sun Install74936
-Node: 3b1 Install75933
-Node: VMS Install77271
-Node: HPUX Install80901
-Node: Trouble81672
-Node: Incompatibilities84902
-Node: Extensions91247
-Node: Statement Exprs93253
-Node: Naming Types94703
-Node: Typeof95786
-Node: Lvalues97641
-Node: Conditionals99535
-Node: Zero-Length100454
-Node: Variable-Length101127
-Node: Subscripting102893
-Node: Pointer Arith103374
-Node: Initializers103945
-Node: Constructors104387
-Node: Function Attributes105877
-Node: Dollar Signs107568
-Node: Alignment108064
-Node: Inline109391
-Node: Extended Asm112327
-Node: Asm Labels121050
-Node: Explicit Reg Vars122358
-Node: Global Reg Vars123371
-Node: Local Reg Vars127575
-Node: Alternate Keywords129149
-Node: Bugs130306
-Node: Bug Criteria131017
-Node: Bug Reporting133845
-Node: Portability144504
-Node: Interface146260
-Node: Passes150632
-Node: RTL163500
-Node: RTL Objects165330
-Node: Accessors168240
-Node: Flags171522
-Node: Machine Modes175807
-Node: Constants182477
-Node: Regs and Memory185227
-Node: Arithmetic191502
-Node: Comparisons196741
-Node: Bit Fields199509
-Node: Conversions200591
-Node: RTL Declarations203260
-Node: Side Effects204029
-Node: Incdec213315
-Node: Assembler215677
-Node: Insns217194
-Node: Calls227177
-Node: Sharing229280
-Node: Machine Desc232089
-Node: Patterns233725
-Node: Example237012
-Node: RTL Template238131
-Node: Output Template246154
-Node: Output Statement249143
-Node: Constraints251263
-Node: Simple Constraints252189
-Node: Multi-Alternative262604
-Node: Class Preferences265599
-Node: Modifiers266476
-Node: No Constraints269859
-Node: Standard Names270963
-Node: Pattern Ordering285565
-Node: Dependent Patterns286786
-Node: Jump Patterns291527
-Node: Peephole Definitions293890
-Node: Expander Definitions300789
-Node: Machine Macros307708
-Node: Run-time Target308949
-Node: Storage Layout312795
-Node: Registers317782
-Node: Register Classes331954
-Node: Stack Layout341969
-Node: Library Names364448
-Node: Addressing Modes366434
-Node: Delayed Branch372733
-Node: Condition Code375820
-Node: Cross-compilation378528
-Node: Misc382969
-Node: Assembler Format391137
-Node: Config416454
+Node: Top1083
+Node: Copying2324
+Node: Contributors15666
+Node: Options17922
+Node: Installation53546
+Node: Other Dir69854
+Node: Sun Install71087
+Node: 3b1 Install72084
+Node: VMS Install73109
+Node: Trouble76718
+Node: Incompatibilities79948
+Node: Extensions86318
+Node: Statement Exprs88178
+Node: Naming Types89628
+Node: Typeof90711
+Node: Lvalues92566
+Node: Conditionals94460
+Node: Zero-Length95379
+Node: Variable-Length96052
+Node: Subscripting97818
+Node: Pointer Arith98299
+Node: Initializers98870
+Node: Constructors99312
+Node: Function Attributes100802
+Node: Dollar Signs102493
+Node: Alignment102796
+Node: Inline104123
+Node: Extended Asm107059
+Node: Asm Labels115782
+Node: Explicit Reg Vars117090
+Node: Global Reg Vars118103
+Node: Local Reg Vars122307
+Node: Alternate Keywords123880
+Node: Bugs125037
+Node: Bug Criteria125748
+Node: Bug Reporting128576
+Node: Portability139235
+Node: Interface140991
+Node: Passes145363
+Node: RTL158231
+Node: RTL Objects160053
+Node: Accessors162963
+Node: Flags166245
+Node: Machine Modes170530
+Node: Constants177200
+Node: Regs and Memory179950
+Node: Arithmetic186225
+Node: Comparisons191464
+Node: Bit Fields194232
+Node: Conversions195314
+Node: RTL Declarations197983
+Node: Side Effects198752
+Node: Incdec207968
+Node: Assembler210330
+Node: Insns211847
+Node: Calls221830
+Node: Sharing223933
+Node: Machine Desc226742
+Node: Patterns228378
+Node: Example231665
+Node: RTL Template232784
+Node: Output Template240807
+Node: Output Statement243796
+Node: Constraints245916
+Node: Simple Constraints246842
+Node: Multi-Alternative257253
+Node: Class Preferences260263
+Node: Modifiers261140
+Node: No Constraints264523
+Node: Standard Names265627
+Node: Pattern Ordering279698
+Node: Dependent Patterns280919
+Node: Jump Patterns285660
+Node: Peephole Definitions288023
+Node: Expander Definitions294922
+Node: Machine Macros301841
+Node: Run-time Target303076
+Node: Storage Layout306922
+Node: Registers311909
+Node: Register Classes326316
+Node: Stack Layout336331
+Node: Library Names358461
+Node: Addressing Modes360447
+Node: Delayed Branch366746
+Node: Condition Code369833
+Node: Cross-compilation372362
+Node: Misc376803
+Node: Assembler Format384931
+Node: Config410247
 
 End Tag Table

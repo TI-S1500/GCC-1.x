@@ -11,18 +11,17 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 
 
@@ -365,7 +364,7 @@ compiler source files include `config.h'.
 
 * Menu:
 
-* Run-time Target::     Defining `-m' options like `-m68000' and `-m68020'.
+* Run-time Target::     Defining -m options like -m68000 and -m68020.
 * Storage Layout::      Defining sizes and alignments of data types.
 * Registers::           Naming and describing the hardware registers.
 * Register Classes::    Defining the classes of hardware registers.
@@ -763,29 +762,36 @@ Register Usage
      floating point machine mode, whether or not floating arithmetic
      can be done on it in those registers.
 
-     On some machines, though, the converse is true: fixed-point
-     machine modes may not go in floating registers.  This is true if
-     the floating registers normalize any value stored in them,
-     because storing a non-floating value there would garble it.  In
-     this case, `HARD_REGNO_MODE_OK' should reject fixed-point
-     machine modes in floating registers.  But if the floating
-     registers do not automatically normalize, if you can store any
-     bit pattern in one and retrieve it unchanged without a trap,
-     then any machine mode may go in a floating register and this
-     macro should say so.
+     The true significance of special floating registers is rather
+     that non-floating-point machine modes *may not* go in those
+     registers.  This is true if the floating registers normalize any
+     value stored in them, because storing a non-floating value there
+     would garble it.  If the floating registers do not automatically
+     normalize, if you can store any bit pattern in one and retrieve
+     it unchanged without a trap, then any machine mode may go in a
+     floating register and this macro should say so.
 
-     The primary significance of special floating registers is rather
-     that they are the registers acceptable in floating point
-     arithmetic instructions.  However, this is of no concern to
-     `HARD_REGNO_MODE_OK'.  You handle it by writing the proper
-     constraints for those instructions.
-
-     On some machines, the floating registers are especially slow to
-     access, so that it is better to store a value in a stack frame
-     than in such a register if floating point arithmetic is not
-     being done.  As long as the floating registers are not in class
-     `GENERAL_REGS', they will not be used unless some insn's
+     Sometimes there are floating registers that are especially slow
+     to access, so that it is better to store a value in a stack
+     frame than in such a register if floating point arithmetic is
+     not being done.  As long as the floating registers are not in
+     class `GENERAL_REGS', they will not be used unless some insn's
      constraint asks for one.
+
+     It is obligatory to support floating point `move' instructions
+     into and out of any registers that can hold fixed point values,
+     because unions and structures (which have modes `SImode' or
+     `DImode') can be in those registers and they may have floating
+     point members.
+
+     There may also be a need to support fixed point `move'
+     instructions in and out of floating point registers. 
+     Unfortunately, I have forgotten why this was so, and I don't
+     know whether it is still true.  If `HARD_REGNO_MODE_OK' rejects
+     fixed point values in floating point registers, then the
+     constraints of the fixed point `move' instructions must be
+     designed to avoid ever trying to reload into a floating point
+     register.
 
 `MODES_TIEABLE_P (MODE1, MODE2)'
      A C expression that is nonzero if it is desirable to choose
@@ -814,17 +820,13 @@ Register Usage
 
 `FRAME_POINTER_REQUIRED'
      A C expression which is nonzero if a function must have and use
-     a frame pointer.  This expression is evaluated twice: at the
-     beginning of generating RTL, and in the reload pass.  If its
-     value is nonzero at either time, then the function will have a
-     frame pointer.
-
-     The expression can in principle examine the current function and
-     decide according to the facts, but on most machines the constant
-     0 or the constant 1 suffices.  Use 0 when the machine allows
-     code to be generated with no frame pointer, and doing so saves
-     some time or space.  Use 1 when there is no possible advantage
-     to avoiding a frame pointer.
+     a frame pointer.  This expression is evaluated in the reload
+     pass, in the function `reload', and it can in principle examine
+     the current function and decide according to the facts, but on
+     most machines the constant 0 or the constant 1 suffices.  Use 0
+     when the machine allows code to be generated with no frame
+     pointer, and doing so saves some time or space.  Use 1 when
+     there is no possible advantage to avoiding a frame pointer.
 
      In certain cases, the compiler does not know how to produce
      valid code without a frame pointer.  The compiler recognizes

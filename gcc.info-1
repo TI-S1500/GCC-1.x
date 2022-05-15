@@ -11,18 +11,17 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 
 
@@ -40,7 +39,6 @@ to report bugs.
 * Copying::         GNU General Public License says
                      how you can copy and share GNU CC.
 * Contributors::    People who have contributed to GNU CC.
-* Boycott::	    Protect your freedom--fight ``look and feel''.
 * Options::         Command options supported by `gcc'.
 * Installation::    How to configure, compile and install GNU CC.
 * Trouble::         If you have trouble installing GNU CC.
@@ -331,7 +329,7 @@ That's all there is to it!
 
 
 
-File: gcc.info,  Node: Contributors,  Next: Boycott,  Prev: Copying,  Up: Top
+File: gcc.info,  Node: Contributors,  Next: Options,  Prev: Copying,  Up: Top
 
 Contributors to GNU CC
 **********************
@@ -392,97 +390,6 @@ GNU CC.
      Tahoe.
 
    * Jonathan Stone wrote the machine description for the Pyramid
-     computer.
-
-
-
-File: gcc.info,  Node: Boycott,  Next: Options,  Prev: Contributors,  Up: Top
-
-Protect Your Freedom--Fight ``Look And Feel''
-*********************************************
-
-Ashton-Tate, Apple, Lotus and Xerox are trying to create a new form
-of legal monopoly: a copyright on a class of user interfaces.  These
-monopolies would cause serious problems for users and developers of
-computer software and systems.
-
-Until three years ago, the law seemed clear: no one could restrict
-others from using a user interface; programmers were free to
-implement any interface they chose.  Imitating interfaces, sometimes
-with changes, was standard practice in the computer field.  The
-interfaces we know evolved gradually in this way; for example, the
-Macintosh user interface drew ideas from the Xerox interface, which
-in turn drew on work done at Stanford and SRI.  1-2-3 imitated
-VisiCalc, and dBase imitated a database program from JPL.
-
-Most computer companies, and nearly all computer users, were happy
-with this state of affairs.  The companies that are suing say it does
-not offer ``enough incentive'' to develop their products, but they
-must have considered it ``enough'' when they made their decision to
-do so.  It seems they are not satisfied with the opportunity to
-continue to compete in the marketplace--not even with a head start.
-
-If Xerox, Lotus, Apple and Ashton-Tate are permitted to make law
-through the courts, the precedent will hobble the software industry:
-
-   * Gratuitous incompatibilites will burden users.  Imagine if each
-     car manufacturer had to arrange the pedals in a different order.
-
-   * Software will become and remain more expensive.  Users will be
-     ``locked in'' to proprietary interfaces, for which there is no
-     real competition.
-
-   * Large companies have an unfair advantage wherever lawsuits
-     become commonplace.  Since they can easily afford to sue, they
-     can intimidate small companies with threats even when they don't
-     really have a case.
-
-   * User interface improvements will come slower, since incremental
-     evolution through creative imitation will no longer be permitted.
-
-   * Even Apple, etc., will find it harder to make improvements if
-     they can no longer adapt the good ideas that others introduce,
-     for fear of weakening their own legal positions.  Some users
-     suggest that this stagnation may already have started.
-
-Here are some things you can do to protect your freedom to write
-programs:
-
-   * Don't buy from Xerox, Lotus, Apple or Ashton-Tate.  Buy from
-     their competitors or from the defendants they are suing.
-
-   * Don't develop software to work with the systems made by these
-     companies.
-
-   * Port your existing software to competing systems, so that you
-     encourage users to switch.
-
-   * Write letters to company presidents to let them know their
-     conduct is unacceptable.
-
-   * Tell your friends and colleagues about this issue and how it
-     threatens to ruin the computer industry.
-
-   * Join the League for Programming Freedom.  Phone (617) 492-0023
-     or write to:
-
-          League for Programming Freedom
-          1 Kendall Square #143
-          P.O. Box 9171
-          Cambridge, MA 02139       league@prep.ai.mit.edu
-
-   * Above all, don't work for the look-and-feel plaintiffs, and
-     don't accept contracts from them.
-
-   * Write to or phone your elected representatives to show them how
-     important this issue is.
-
-          Senator So and So       Representative So and So
-          United States Senate    House of Representatives
-          Washington, DC 20510    Washington, DC 20515
-
-     You can phone senators and representatives at (202) 225-3121.
-
-Express your opinion!  You can make a difference.
+     computer.  Note that this machine description does not fully work.
 
 

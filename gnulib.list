@@ -1,0 +1,354 @@
+	rm -f stamp-gnulib2
+	rm -f tmpgnulib gnulib; \
+	for name in _eprintf _builtin_new _builtin_New _builtin_del  _umulsi3 _mulsi3 _udivsi3 _divsi3 _umodsi3 _modsi3  _lshrsi3 _lshlsi3 _ashrsi3 _ashlsi3  _divdf3 _muldf3 _negdf2 _adddf3 _subdf3 _cmpdf2  _fixunsdfsi _fixdfsi _floatsidf _truncdfsf2 _extendsfdf2  _addsf3 _negsf2 _subsf3 _cmpsf2 _mulsf3 _divsf3; \
+	do \
+	  echo ${name}; \
+	  rm -f ${name}.c; \
+	  cp ./gnulib.c ${name}.c; \
+	  /usr/bin/cc -O -I. -I. -I./config -R -c -DL${name} ${name}.c; \
+	  ar qc tmpgnulib ${name}.o; \
+	  rm -f ${name}.[co]; \
+	done
+_eprintf
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  2004 lines.  File _eprintf.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_builtin_new
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1920 lines.  File _builtin_new.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_builtin_New
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1963 lines.  File _builtin_New.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_builtin_del
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1937 lines.  File _builtin_del.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_umulsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _umulsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_mulsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _mulsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_udivsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _udivsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_divsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _divsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_umodsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _umodsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_modsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _modsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_lshrsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _lshrsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_lshlsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _lshlsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_ashrsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _ashrsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_ashlsi3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _ashlsi3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_divdf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _divdf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_muldf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _muldf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_negdf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _negdf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_adddf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _adddf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_subdf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _subdf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_cmpdf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1915 lines.  File _cmpdf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_fixunsdfsi
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1919 lines.  File _fixunsdfsi.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_fixdfsi
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _fixdfsi.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_floatsidf
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1911 lines.  File _floatsidf.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_truncdfsf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _truncdfsf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_extendsfdf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _extendsfdf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_addsf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _addsf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_negsf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _negsf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_subsf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _subsf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_cmpsf2
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1915 lines.  File _cmpsf2.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_mulsf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _mulsf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+_divsf3
+MC68020 "C" Compiler  V2.8                   10-May-88
+(C) Copyright 1983, 1988 Silicon Valley Software, Inc.
+
+0 errors.  1912 lines.  File _divsf3.z
+MC68020 Code Generator  V2.8                 10-May-88
+(C) Copyright 1980, 1988 Silicon Valley Software, Inc.
+
+MC68020 Object Code Formatter  V2.8          10-May-88
+(C) Copyright 1984, 1988 Silicon Valley Software, Inc.
+
+	if [ -f /usr/bin/ranlib -o -f /bin/ranlib ] ; then ranlib tmpgnulib ;fi
+	mv tmpgnulib gnulib

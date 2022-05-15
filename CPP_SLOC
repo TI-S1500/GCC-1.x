@@ -1,0 +1,5 @@
+sloc =       4061; module =cccp.c         ; path=
+sloc =        993; module =cexp.c         ; path=
+sloc =          1; module =version.c      ; path=
+sloc =        573; module =cexp.y         ; path=
+tsloc=       5628; product=GNU C Preprocessor; date=02/03/92; time=23:02

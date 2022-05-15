@@ -280,6 +280,13 @@ int profile_block_flag;
 
 int pedantic = 0;
 
+#ifdef ti1500
+/* Nonzero by default: set to zero if -NOIDENT switch is on -- Shawn Islam */
+int ident_flag = 1;
+/* Zero by default: set to one if #pragma EXTENSIONS is given */
+int allow_extensions = 0;
+#endif
+
 /* Nonzero for -finline-functions: ok to inline functions that look like
    good inline candidates.  */
 
@@ -290,6 +297,11 @@ int flag_inline_functions;
    purposes.  */
 
 int flag_keep_inline_functions;
+
+#ifdef ti1500
+/* Nonzero means allocate storage for bitfields like SVS C */
+int flag_svs_bitfields = 0;
+#endif /* ti1500 */
 
 /* Nonzero means make the text shared if supported.  */
 
@@ -336,7 +348,10 @@ struct { char *string; int *variable; int on_value;} f_options[] =
   {"shared-data", &flag_shared_data, 1},
   {"caller-saves", &flag_caller_saves, 1},
   {"pcc-struct-return", &flag_pcc_struct_return, 1},
-  {"delayed-branch", &flag_delayed_branch, 1}
+  {"delayed-branch", &flag_delayed_branch, 1},
+#ifdef ti1500
+  {"svs_bitfields", &flag_svs_bitfields, 1}
+#endif /* ti1500 */
 };
 
 /* Output files for assembler code (real compiler output)
@@ -1072,7 +1087,7 @@ compile_file (name)
 
   /* Output something to inform GDB that this compilation was by GCC.  */
 #ifndef ASM_IDENTIFY_GCC
-  fprintf (asm_out_file, "gcc_compiled.:\n");
+  /* fprintf (asm_out_file, "gcc_compiled.:\n"); */
 #else
   ASM_IDENTIFY_GCC (asm_out_file);
 #endif
@@ -1885,6 +1900,11 @@ main (argc, argv, envp)
 	  optimize = 1, obey_regdecls = 0;
 	else if (!strcmp (str, "pedantic"))
 	  pedantic = 1;
+#ifdef ti1500
+/* if -NOIDENT switch is on then throw out #ident - Shawn Islam */
+        else if (!strcmp (str, "NOIDENT"))
+          ident_flag = 0;
+#endif
 	else if (lang_decode_option (argv[i]))
 	  ;
 	else if (!strcmp (str, "quiet"))
@@ -1987,6 +2007,12 @@ main (argc, argv, envp)
 #ifdef OVERRIDE_OPTIONS
   /* Some machines may reject certain combinations of options.  */
   OVERRIDE_OPTIONS;
+#endif
+
+#ifdef ti1500
+/* The -O and -fstrength-reduce should not be used together */
+ if (optimize && flag_strength_reduce)
+    flag_strength_reduce = 0;
 #endif
 
   /* Now that register usage is specified, convert it to HARD_REG_SETs.  */

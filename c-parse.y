@@ -50,6 +50,15 @@ State 199 contains 1 shift/reduce conflict.  (Two ways to recover from error.)
 extern int errno;
 #endif
 
+/* Added to make #ident optional -- Shawn Islam */
+#ifdef ti1500
+#pragma EXTENSIONS
+extern int ident_flag;
+/* Zero if extensions are not allowed */
+extern int allow_extensions;
+extern int s1500_largest_neg=0;
+#endif
+
 void yyerror ();
 
 /* Cause the `yydebug' variable to be defined.  */
@@ -190,7 +199,7 @@ extdef:
 	fndef
 	| datadef
 	| ASM '(' string ')' ';'
-		{ if (pedantic)
+		{ if (pedantic || !allow_extensions)
 		    warning ("ANSI C forbids use of `asm' keyword");
 		  if (TREE_CHAIN ($3)) $3 = combine_strings ($3);
 		  assemble_asm ($3); }
@@ -310,7 +319,9 @@ unary_expr:
 	| SIZEOF '(' typename ')'  %prec HYPERUNARY
 		{ $$ = c_sizeof (groktypename ($3)); }
 	| ALIGNOF unary_expr  %prec UNARY
-		{ if (TREE_CODE ($2) == COMPONENT_REF
+		{  if (!allow_extensions)
+                    warning("__alignof__ is a GNU C extension");
+		 if (TREE_CODE ($2) == COMPONENT_REF
 		      && TREE_PACKED (TREE_OPERAND ($2, 1)))
 		    error ("`__alignof' applied to a bit-field");
 		  if (TREE_CODE ($2) == INDIRECT_REF)
@@ -343,7 +354,12 @@ unary_expr:
 		    }
 		}
 	| ALIGNOF '(' typename ')'  %prec HYPERUNARY
-		{ $$ = c_alignof (groktypename ($3)); }
+		{
+#ifdef ti1500
+	        	if (!allow_extensions)
+	        	 warning("__alignof__ is a GNU C extension");
+#endif
+		 $$ = c_alignof (groktypename ($3)); }
 	;
 
 cast_expr:
@@ -353,7 +369,7 @@ cast_expr:
 		  $$ = build_c_cast (type, $4); }
 	| '(' typename ')' '{' initlist maybecomma '}'  %prec UNARY
 		{ tree type = groktypename ($2);
-		  if (pedantic)
+		  if (pedantic || !allow_extensions)
 		    warning ("ANSI C forbids constructor expressions");
 		  $$ = digest_init (type, build_nt (CONSTRUCTOR, NULL_TREE, nreverse ($5)), 0);
 		  if (TREE_CODE (type) == ARRAY_TYPE && TYPE_SIZE (type) == 0)
@@ -469,7 +485,11 @@ primary:
 		  $<ttype>$ = expand_start_stmt_expr (); }
 	  compstmt ')'
 		{ tree rtl_exp;
+#ifdef ti1500
+		  if (pedantic || !allow_extensions)
+#else
 		  if (pedantic)
+#endif
 		    warning ("ANSI C forbids braced-groups within expressions");
 		  rtl_exp = expand_end_stmt_expr ($<ttype>2);
 		  $$ = $3;
@@ -599,11 +619,19 @@ typespec: TYPESPEC
 	| TYPENAME
 	| TYPEOF '(' expr ')'
 		{ $$ = TREE_TYPE ($3);
+#ifdef ti1500
+		  if (pedantic || !allow_extensions)
+#else
 		  if (pedantic)
+#endif
 		    warning ("ANSI C forbids `typeof'"); }
 	| TYPEOF '(' typename ')'
 		{ $$ = groktypename ($3);
+#ifdef ti1500
+		  if (pedantic || !allow_extensions)
+#else
 		  if (pedantic)
+#endif
 		    warning ("ANSI C forbids `typeof'"); }
 	;
 
@@ -630,7 +658,11 @@ maybeasm:
 	| ASM '(' string ')'
 		{ if (TREE_CHAIN ($3)) $3 = combine_strings ($3);
 		  $$ = $3;
+#ifdef ti1500
+		  if (pedantic || !allow_extensions)
+#else
 		  if (pedantic)
+#endif
 		    warning ("ANSI C forbids use of `asm' keyword");
 		}
 	;
@@ -1176,11 +1208,11 @@ stmt:
 
 maybe_type_qual:
 	/* empty */
-		{ if (pedantic)
+		{ if (pedantic || !allow_extensions)
 		    warning ("ANSI C forbids use of `asm' keyword");
 		  emit_line_note (input_filename, lineno); }
 	| TYPE_QUAL
-		{ if (pedantic)
+		{ if (pedantic || !allow_extensions)
 		    warning ("ANSI C forbids use of `asm' keyword");
 		  emit_line_note (input_filename, lineno); }
 	;
@@ -1775,6 +1807,55 @@ check_newline ()
 
   if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
     {
+#ifdef ti1500
+
+      if (c == 'p')
+	{
+	  if (getc (finput) == 'r'
+	      && getc (finput) == 'a'
+	      && getc (finput) == 'g'
+	      && getc (finput) == 'm'
+	      && getc (finput) == 'a'
+	      && ((c = getc (finput)) == ' ' || c == '\t' || c == '\n'))
+            {
+
+             /* Here we have just seen 'pragma'
+                And EXTENSIONS should follow */
+
+             while (c == ' ' || c == '\t')
+                    c = getc(finput);
+	    /* If no argument, ignore the line */
+             if (c == '\n')
+                return c;
+
+             if (c == 'E')
+              {
+                if (getc(finput) == 'X'
+                    && getc(finput) == 'T'
+                    && getc(finput) == 'E'
+                    && getc(finput) == 'N'
+                    && getc(finput) == 'S'
+                    && getc(finput) == 'I'
+                    && getc(finput) == 'O'
+                    && getc(finput) == 'N'
+                    && getc(finput) == 'S'
+                    && ((c = getc(finput)) == ' ' || c == '\t' || c == '\n'))
+                  {
+                     allow_extensions = 1;
+                     goto skipline;
+                  }
+
+                else
+                  error("Wrong argument with #pragma");
+               }
+             else 
+                /* anything else other than EXTENSIONS is skipped */
+               {
+                   goto skipline;
+               }
+            }
+	}
+#else
       if (c == 'p')
 	{
 	  if (getc (finput) == 'r'
@@ -1785,6 +1866,7 @@ check_newline ()
 	      && ((c = getc (finput)) == ' ' || c == '\t' || c == '\n'))
 	    goto skipline;
 	}
+#endif
 
       else if (c == 'l')
 	{
@@ -1825,7 +1907,10 @@ check_newline ()
 		  error ("invalid #ident");
 		  goto skipline;
 		}
-
+/* added to make #ident optional -- Shawn Islam */
+#ifdef ti1500
+ if (ident_flag)
+#endif
 #ifdef ASM_OUTPUT_IDENT
 	      ASM_OUTPUT_IDENT (asm_out_file, TREE_STRING_POINTER (yylval.ttype));
 #endif
@@ -2201,7 +2286,22 @@ yylex ()
 			&& ptr->rid != RID_INLINE)
 		    /* Recognize __inline, etc. despite -ftraditional.  */
 		    || token_buffer[0] == '_'))
+#ifdef ti1500
+	      {
+          if ((token_buffer[0] == '_') && !allow_extensions)
+           warning("%s keyword only supported in GNU C extension",token_buffer);
+          if ((token_buffer[0] == 'i' &&
+                token_buffer[1] == 'n' &&
+	        token_buffer[2] == 'l' &&
+	        token_buffer[3] == 'i' &&
+	        token_buffer[4] == 'n' &&
+	        token_buffer[5] == 'e' ) && !allow_extensions)
+           warning("%s keyword only supported in GNU C extension",token_buffer);
+          value = (int) ptr->token;
+	      }
+#else
 	      value = (int) ptr->token;
+#endif
 	  }
       }
 
@@ -2528,6 +2628,15 @@ yylex ()
 	       any integer constant fits any long long type.  */
 	    if (shorts[7] >= (1<<8))
 	      spec_unsigned = 1;
+
+/* added the following two line for handling of the smallest negative
+   number in 2's compliment machine -- Shawn Islam */
+/* The smallest number is : -2147483648   */
+#ifdef ti1500
+         if (shorts[3] == 128 && shorts[0] == 0 && shorts[1] == 0 &&
+               shorts[2] == 0)
+            s1500_largest_neg = 1;
+#endif
 
 	    /* This is simplified by the fact that our constant
 	       is always positive.  */

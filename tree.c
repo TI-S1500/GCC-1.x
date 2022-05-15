@@ -32,6 +32,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    are used also for allocating many other kinds of objects
    by all passes of the compiler.  */
 
+#ifdef ti1500
+/* Added to use GNU C extensions */
+#pragma EXTENSIONS
+/* added for handling of the 2's compliment smallest data */
+extern s1500_largest_neg;
+#endif
+
 #include "config.h"
 #include <stdio.h>
 #include "tree.h"
@@ -2197,6 +2204,17 @@ int_fits_type_p (c, type)
     return (!INT_CST_LT_UNSIGNED (TYPE_MAX_VALUE (type), c)
 	    && !INT_CST_LT_UNSIGNED (c, TYPE_MIN_VALUE (type)));
   else
+    {
+    /* Added to handle the smallest 2's complement negative number on
+       TI S1500 -- Shawn Islam  */
+#ifdef ti1500
+      if (s1500_largest_neg)
+      {
+	s1500_largest_neg = 0;
+        return (!INT_CST_LT (c, TYPE_MIN_VALUE (type)));
+      }
+#endif
     return (!INT_CST_LT (TYPE_MAX_VALUE (type), c)
 	    && !INT_CST_LT (c, TYPE_MIN_VALUE (type)));
+   }
 }

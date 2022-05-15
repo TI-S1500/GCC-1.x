@@ -1,0 +1,72 @@
+
+
+
+                           GNU BIN KIT
+
+                      SOFTWARE MEASUREMENT
+
+
+
+ 1. Size Measurement:
+
+
+ 
+       GNU C Compiler:
+ 
+          All .c and .h files -----       58360
+          Configurable .h files ---        6719
+          Non C file (.def and md)-        4918
+          -------------------------------------
+           Total Maintenable code --      69997
+
+           Number of Files   215
+
+
+       GNU  Assembler:
+
+          All .c and .h files ----        14589
+          Number of Files   77
+
+
+       GNU Debugger:
+
+          All .c and .h files ----        27440
+          Number of Files   128
+
+
+
+
+  Total Maintenable Code For GNU C ===> 112,026
+  TOTAL NUMBER OF FILES ===>   421
+
+
+
+
+ 2. Number of Executable:
+
+
+        There are seven executables :
+
+              gcc         -- GNU C invoking script
+              gcc-gcc     -- GNU C Compiler front end
+              gcc-cpp     -- GNU C preprocessor
+              gcc-cc1     -- GNU C compiler
+              gcc-as      -- GNU assembler
+              gdb         -- GNU source level debugger
+              install     -- GNU C install script 
+
+
+
+ 3. Number of Product:
+
+
+      One product    GNU BIN KIT
+
+
+ 4. Number of License:
+
+
+      One License: GNU general public License
+
+
+

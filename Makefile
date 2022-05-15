@@ -21,8 +21,17 @@
 # Variables that exist for you to override.
 # See below for how to change them for certain systems.
 
-CFLAGS = -g $(XCFLAGS)
-CC = cc
+# BLD_LD, BLD_CRT0, BLD_AS, BLD_ENV, SVS_CC, BIN_DIR, LIB_DIR,
+# and MAN_DIR are all defined in build-compiler.
+
+#CFLAGS = $(XCFLAGS)
+#CFLAGS = -O -v $(XCFLAGS)
+#CFLAGS = -g -NOOP -v -W -NOIDENT $(XCFLAGS) 
+CFLAGS = -O -v -W -NOIDENT -SLINK ${BLD_ENV} $(XCFLAGS)
+LD   = ${BLD_LD}
+CRT0 = ${BLD_CRT0}
+CC   = ${BLD_CCL}
+AS   = ${BLD_AS}
 BISON = bison
 BISONFLAGS = -v
 AR = ar
@@ -32,7 +41,7 @@ INSTALL = install -c
 
 # Compiler to use for compiling gnulib.
 # OLDCC should not be the GNU C compiler.
-OLDCC = cc
+OLDCC = ${SVS_CC} ${BLD_ENV}
 
 # CFLAGS for use with OLDCC, for compiling gnulib.
 # NOTE: -O does not work on some Unix systems!
@@ -45,16 +54,19 @@ HARD_PARAMS_FLAGS=
 # Directory where sources are, from where we are.
 srcdir = .
 # Directory in which to put the executable for the command `gcc'
-bindir = $(prefix)/usr/local/bin
+#bindir = $(prefix)/usr/local/bin
+bindir = ${BIN_DIR}
 # Directory in which to put the subprograms used by the compiler.
-libdir = $(prefix)/usr/local/lib
+#libdir = $(prefix)/usr/local/lib
+libdir = ${LIB_DIR}
 # Directory in which to put man pages.
-mandir = $(prefix)/usr/local/man/man1
+#mandir = $(prefix)/usr/local/man/man1
+mandir = ${MAN_DIR}
 # Number to put in man-page filename.
 manext = 1
 
 # Additional system libraries to link with.
-CLIB=
+CLIB= -lc
 
 # Change this to a null string if obstacks are installed in the
 # system library.
@@ -85,13 +97,14 @@ DIR = ../gcc
 
 # On the 3b1, this line may help you compile gnulib
 # if you already have a prior version of gcc installed.
-# CCLIBFLAGS = -B/usr/local/lib/gcc- -tp -Wp,-traditional
+# CCLIBFLAGS = -B${BLD_LIB}/gcc- -tp -Wp,-traditional
 
 # If you are making gcc for the first time, and if you are compiling it with
 # a non-gcc compiler, and if your system doesn't have a working alloca() in any
 # of the standard libraries (as is true for HP/UX or Genix),
 # then get alloca.c from GNU Emacs and un-comment the following line:
-# ALLOCA = alloca.o
+ALLOCA = alloca.o
+CPP_ALLOCA = my_alloca.o
 # But don't do that if compiling using GCC.
 
 # If your system has alloca() in /lib/libPW.a, un-comment the following line:
@@ -103,7 +116,7 @@ DIR = ../gcc
 # If your system's malloc() routine fails for any reason (as it does on
 # certain versions of Genix), try getting the files
 # malloc.c and getpagesize.h from GNU Emacs and un-comment the following line:
-# MALLOC = malloc.o
+MALLOC = malloc.o
 
 # If you are running GCC on an Apollo (SR10.x),
 # go into a Berkeley environment and use this:
@@ -114,10 +127,14 @@ DIR = ../gcc
 # Dependency on obstack, alloca, malloc or whatever library facilities
 # are not installed in the system libraries.
 LIBDEPS= $(OBSTACK) $(ALLOCA) $(MALLOC)
+#CPP_LIBDEPS= $(OBSTACK) $(CPP_ALLOCA) $(MALLOC)
+CPP_LIBDEPS= $(OBSTACK) $(CPP_ALLOCA)
 
 # How to link with both our special library facilities
 # and the system's installed libraries.
 LIBS = $(OBSTACK) $(ALLOCA) $(MALLOC) $(CLIB)
+#CPP_LIBS = $(OBSTACK) $(CPP_ALLOCA) $(MALLOC) $(CLIB)
+CPP_LIBS = $(OBSTACK) $(CPP_ALLOCA) $(CLIB)
 
 # Specify the directories to be searched for header files.
 # Both . and srcdir are used, in that order,
@@ -140,7 +157,7 @@ CPLUS_OBJS = cplus-parse.o cplus-decl.o cplus-typeck.o \
    cplus-class.o cplus-init.o cplus-method.o
 
 # Language-independent object files.
-OBJS = toplev.o version.o tree.o print-tree.o stor-layout.o fold-const.o \
+OBJS = toplev.o version.o tree.o print-tree.o storlayout.o fold-const.o \
  rtl.o rtlanal.o expr.o stmt.o expmed.o explow.o optabs.o varasm.o \
  symout.o dbxout.o sdbout.o emit-rtl.o insn-emit.o \
  integrate.o jump.o cse.o loop.o flow.o stupid.o combine.o \
@@ -190,7 +207,8 @@ CPLUS_TREE_H = $(TREE_H) cplus-tree.h c-tree.h
 # because all that file does, when not compiling with GCC,
 # is include the system varargs.h.
 
-all: config.status gnulib gcc cc1 cpp float.h gnulib2 # cc1plus
+#all: config.status gnulib gcc cc1 cpp float.h # gnulib2 cc1plus
+all: gcc cc1 cpp 
 
 lang-c: config.status gnulib gcc cc1 cpp gnulib2
 # lang-cplus: config.status gnulib gcc cc1plus cpp gnulib2
@@ -204,12 +222,13 @@ doc: $(srcdir)/cpp.info $(srcdir)/gplus.info $(srcdir)/gcc.info
 compilations: ${OBJS}
 
 gcc: gcc.o version.o $(LIBDEPS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o gccnew gcc.o version.o $(LIBS)
+#	$(CC) $(CFLAGS) $(LDFLAGS) -o gccnew gcc.o version.o $(LIBS)
+	$(LD) $(LDFLAGS) -o gccnew $(CRT0) gcc.o version.o $(LIBS)
 # Go via `gccnew' to avoid `file busy' if $(CC) is `gcc'.
 	mv gccnew gcc
 
 cc1: $(C_OBJS) $(OBJS) $(LIBDEPS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o cc1 $(C_OBJS) $(OBJS) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o cc1 $(C_OBJS) $(OBJS) $(LIBS) 
 
 cc1plus: $(CPLUS_OBJS) $(OBJS) $(LIBDEPS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o cc1plus $(CPLUS_OBJS) $(OBJS) $(LIBS)
@@ -225,7 +244,7 @@ gnulib: gnulib.c $(CONFIG_H)
 	  echo $${name}; \
 	  rm -f $${name}.c; \
 	  cp $(srcdir)/gnulib.c $${name}.c; \
-	  $(OLDCC) $(CCLIBFLAGS) $(INCLUDES) -c -DL$${name} $${name}.c; \
+	  $(OLDCC) $(CCLIBFLAGS) $(INCLUDES) -R -c -DL$${name} $${name}.c; \
 	  $(AR) qc tmpgnulib $${name}.o; \
 	  rm -f $${name}.[co]; \
 	done
@@ -276,8 +295,10 @@ hard-params.o: $(srcdir)/hard-params.c
 
 c-parse.tab.o : $(srcdir)/c-parse.tab.c $(CONFIG_H) $(TREE_H) c-parse.h c-tree.h input.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $(srcdir)/c-parse.tab.c
-$(srcdir)/c-parse.tab.c : $(srcdir)/c-parse.y
-	$(BISON) $(BISONFLAGS) $(srcdir)/c-parse.y -o $@
+# April 1, 1994 -- JWWJ -- No longer build c-parse.tab.c, because our version
+# of bison does not build the c-parse.y file properly.
+#$(srcdir)/c-parse.tab.c : $(srcdir)/c-parse.y
+#	$(BISON) $(BISONFLAGS) $(srcdir)/c-parse.y -o $@
 
 c-decl.o : c-decl.c $(CONFIG_H) $(TREE_H) c-tree.h c-parse.h flags.h
 c-typeck.o : c-typeck.c $(CONFIG_H) $(TREE_H) c-tree.h flags.h
@@ -290,9 +311,11 @@ cplus-parse.o : $(srcdir)/cplus-parse.c $(CONFIG_H) $(CPLUS_TREE_H) flags.h
   -DPARSE_OUTPUT=\"$(PWD)/cplus-parse.output\" \
   `echo $(srcdir)/cplus-parse.c | sed 's,^\./,,'`
 
-$(srcdir)/cplus-parse.h $(srcdir)/cplus-parse.c : $(srcdir)/cplus-parse.y
-	@echo expect 49 shift/reduce conflicts and 4 reduce/reduce conflicts
-	$(BISON) $(BISONFLAGS) -d -o $(srcdir)/cplus-parse.c $(srcdir)/cplus-parse.y
+# April 3, 1994 -- JWWJ -- No longer build cplus-parse.c/h, because our version
+# of bison does not build the c-parse.y file properly.
+#$(srcdir)/cplus-parse.h $(srcdir)/cplus-parse.c : $(srcdir)/cplus-parse.y
+#	@echo expect 49 shift/reduce conflicts and 4 reduce/reduce conflicts
+#	$(BISON) $(BISONFLAGS) -d -o $(srcdir)/cplus-parse.c $(srcdir)/cplus-parse.y
 
 cplus-lex.o : cplus-lex.c $(CONFIG_H) $(CPLUS_TREE_H) $(srcdir)/cplus-parse.h
 cplus-decl.o : cplus-decl.c $(CONFIG_H) $(CPLUS_TREE_H) flags.h
@@ -317,7 +340,7 @@ obstack.o: obstack.c
 
 tree.o : tree.c $(CONFIG_H) $(TREE_H) flags.h
 print-tree.o : print-tree.c $(CONFIG_H) $(TREE_H)
-stor-layout.o : stor-layout.c $(CONFIG_H) $(TREE_H) $(RTL_H)
+storlayout.o : storlayout.c $(CONFIG_H) $(TREE_H) $(RTL_H)
 fold-const.o : fold-const.c $(CONFIG_H) $(TREE_H)
 toplev.o : toplev.c $(CONFIG_H) $(TREE_H) flags.h input.h
 
@@ -338,7 +361,7 @@ optabs.o : optabs.c $(CONFIG_H) $(RTL_H) $(TREE_H) flags.h  \
    insn-flags.h insn-codes.h expr.h insn-config.h recog.h
 symout.o : symout.c $(CONFIG_H) $(TREE_H) $(RTL_H) symseg.h gdbfiles.h
 dbxout.o : dbxout.c $(CONFIG_H) $(TREE_H) $(RTL_H) flags.h
-sdbout.o : sdbout.c $(CONFIG_H) $(TREE_H) $(RTL_H)
+sdbout.o : sdbout.c $(CONFIG_H) $(TREE_H) $(RTL_H) flags.h
 
 emit-rtl.o : emit-rtl.c $(CONFIG_H) $(RTL_H) regs.h insn-config.h real.h
 
@@ -378,7 +401,7 @@ recog.o : recog.c $(CONFIG_H) $(RTL_H)  \
 # Note some machines won't allow $(CC) without -S on this source file.
 alloca.o:	alloca.c
 	$(CC) $(CFLAGS) -S `echo $(srcdir)/alloca.c | sed 's,^\./,,'`
-	as alloca.s -o alloca.o
+	$(AS) -coff alloca.s -o alloca.o
 
 # Now the source files that are generated from the machine description.
 
@@ -506,12 +529,14 @@ genoutput.o : genoutput.c $(RTL_H) config.h
 cpp: cccp
 	-rm -f cpp
 	ln cccp cpp
-cccp: cccp.o cexp.o version.o $(LIBDEPS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o cccp cccp.o cexp.o version.o $(LIBS)
+cccp: cccp.o cexp.o version.o $(CPP_LIBDEPS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o cccp cccp.o cexp.o version.o $(CPP_LIBS)
 cexp.o: $(srcdir)/cexp.c $(CONFIG_H)
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $(srcdir)/cexp.c
-$(srcdir)/cexp.c: $(srcdir)/cexp.y
-	$(BISON) -o $(srcdir)/cexp.c $(srcdir)/cexp.y
+# April 3, 1994 -- JWWJ -- No longer build cexp.c, because our version
+# of bison does not build the c-parse.y file properly.
+#$(srcdir)/cexp.c: $(srcdir)/cexp.y
+#	$(BISON) -o $(srcdir)/cexp.c $(srcdir)/cexp.y
 cccp.o: cccp.c $(CONFIG_H)
 	$(CC) $(CFLAGS) $(INCLUDES) \
           -DGCC_INCLUDE_DIR=\"$(libdir)/gcc-include\" \
@@ -532,8 +557,6 @@ $(srcdir)/gcc.info: $(srcdir)/gcc.texinfo
 clean:
 	-rm -f $(STAGESTUFF) $(STAGE_GCC)
 # Delete the temp files made in the course of building gnulib.
-	-rm -f tmpgnulib
-	for name in $(LIBFUNCS); do rm -f $${name}.c; done
 	-rm -f stamp-*.[ch] tmp-*
 	-rm -f *.s *.s[0-9] *.co *.greg *.lreg *.combine *.flow *.cse *.jump *.rtl *.tree *.loop *.dbr *.jump2
 	-rm -f core float.h hard-params
@@ -547,8 +570,14 @@ cleanconfig: clean
 realclean: cleanconfig
 	-rm -f cpp.aux cpp.cps cpp.fns cpp.info cpp.kys cpp.pgs cpp.tps cpp.vrs
 #	-rm -f cplus-parse.tab.c cplus-parse.output
-	-rm -f c-parse.tab.c c-parse.output c-parse.tab.output
-	-rm -f gnulib cexp.c TAGS 
+# April 1, 1994 -- JWWJ -- no longer remove c-parse.tab.c, since we cannot  
+# rebuild it from c-parse.y.
+#	-rm -f c-parse.tab.c c-parse.output c-parse.tab.output
+	-rm -f c-parse.output c-parse.tab.output
+# April 5, 1994 -- JWWJ -- no longer remove cexp.c, since we cannot rebuild it
+# from cexp.c.            
+#	-rm -f gnulib cexp.c TAGS 
+	-rm -f gnulib TAGS 
 	-rm -f cpp.info* cpp.?? cpp.??s cpp.log cpp.toc cpp.*aux
 	-rm -f gcc.info* gcc.?? gcc.??s gcc.log gcc.toc gcc.*aux
 	-rm -f gplus.info* gplus.?? gplus.??s gplus.log gplus.toc gplus.*aux
@@ -592,9 +621,9 @@ maketest:
 
 bootstrap: all force
 	$(MAKE) stage1
-	$(MAKE) CC="stage1/gcc -Bstage1/" CFLAGS="-O $(CFLAGS)" libdir=$(libdir)
+	$(MAKE) CC="stage1/gcc -Bstage1/" CFLAGS="-O -pipe $(CFLAGS)" libdir=$(libdir)
 	$(MAKE) stage2
-	$(MAKE) CC="stage2/gcc -Bstage2/" CFLAGS="-O $(CFLAGS)" libdir=$(libdir)
+	$(MAKE) CC="stage2/gcc -Bstage2/" CFLAGS="-O -pipe $(CFLAGS)" libdir=$(libdir)
 
 bootstrap2: force
 	$(MAKE) CC="stage1/gcc -Bstage1/" CFLAGS="-O $(CFLAGS)" libdir=$(libdir)

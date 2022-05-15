@@ -25,6 +25,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    We also output the assembler code for constants stored in memory
    and are responsible for combining constants with the same value.  */
 
+#ifdef ti1500
+/* added to use GNU C extensions */
+#pragma EXTENSIONS
+#endif
+
 #include <stdio.h>
 #include <setjmp.h>
 /* #include <stab.h> */
@@ -63,6 +68,17 @@ int var_labelno;
 static int function_defined;
 
 extern FILE *asm_out_file;
+
+/* added for ti1500 status register, which was not originally a part
+   of gnu c compiler */
+
+#ifdef ti1500
+  int have_1500_sr_reg = 0;
+#endif
+
+#ifdef ti1500
+  int done_align = 0;
+#endif
 
 static char *compare_constant_1 ();
 static void record_constant_1 ();
@@ -161,7 +177,13 @@ decode_reg_name (asmspec)
 	  break;
 
       if (i < FIRST_PSEUDO_REGISTER)
+       {
+#ifdef ti1500
+        if ((strcmp(asmspec,"sr")) == 0)
+            have_1500_sr_reg = 1;
+#endif
 	return i;
+       }
       else
 	return -2;
     }
@@ -549,8 +571,25 @@ assemble_variable (decl, top_level, write_symbols, at_end)
 
   /* Output the alignment of this data.  */
   for (i = 0; DECL_ALIGN (decl) >= BITS_PER_UNIT << (i + 1); i++);
-  if (i > 0)
-    ASM_OUTPUT_ALIGN (asm_out_file, i);
+#ifdef ti1500
+/* added for 68010 alignment -- Shawn Islam */
+  if (!TARGET_68020)
+   {
+      if (!done_align)
+       {
+         if (i > 0)
+          ASM_OUTPUT_ALIGN (asm_out_file, i);
+         done_align = 0;
+       }
+      else
+        done_align = 0;
+    }
+  else      /* TARGET_68020 */
+#endif
+   {
+    if (i > 0)
+      ASM_OUTPUT_ALIGN (asm_out_file, i);
+   }
 
   /* Output the name(s) of this data.  */
   ASM_OUTPUT_LABEL (asm_out_file, name);
@@ -1834,6 +1873,17 @@ output_constant (exp, size)
 
 	  assemble_string (TREE_STRING_POINTER (exp), size);
 	  size = excess;
+#ifdef ti1500
+/* added for 68010 storage allocation of strings -- Shawn Islam */
+         if (!TARGET_68020)
+#endif
+          {
+          if (size == 0)
+           {
+            ASM_OUTPUT_ALIGN (asm_out_file, 2);
+            done_align = 1;
+            }
+          }   /* !TARGET_68020 */
 	}
       else
 	abort ();
@@ -1868,6 +1918,8 @@ output_constructor (exp, size)
   /* Non-zero means BYTE contains part of a byte, to be output.  */
   int byte_buffer_in_use = 0;
   register int byte;
+  int byte_offset = -1;
+	int first_field_of_bits = 0;
 
   if (HOST_BITS_PER_INT < BITS_PER_UNIT)
     abort ();
@@ -1904,17 +1956,29 @@ output_constructor (exp, size)
 	      total_bytes++;
 	      byte_buffer_in_use = 0;
 	    }
-
-	  /* Advance to offset of this element.
-	     Note no alignment needed in an array, since that is guaranteed
-	     if each element has the proper size.  */
-	  if (field != 0 && DECL_OFFSET (field) / BITS_PER_UNIT != total_bytes)
+	  /* Align to this element's alignment,
+	     if it isn't aligned properly by its predecessors.  */
+		if (first_field_of_bits) {
+	  if ((DECL_OFFSET(field)/BITS_PER_UNIT) != total_bytes)  /* pbl */
 	    {
-	      ASM_OUTPUT_SKIP (asm_out_file,
-			       (DECL_OFFSET (field) / BITS_PER_UNIT
-				- total_bytes));
-	      total_bytes = DECL_OFFSET (field) / BITS_PER_UNIT;
+	      int to_byte = DECL_OFFSET (field) / BITS_PER_UNIT;
+	      ASM_OUTPUT_SKIP (asm_out_file, to_byte - total_bytes);
+	      total_bytes = to_byte;
 	    }
+		 first_field_of_bits = 0;
+		}
+	  else {
+	  if (field && (total_bytes * BITS_PER_UNIT) % DECL_ALIGN (field) != 0)
+	    {
+	      int byte_align = DECL_ALIGN (field) / BITS_PER_UNIT;
+	      int to_byte = (((total_bytes + byte_align - 1) / byte_align)
+			     * byte_align);
+	      ASM_OUTPUT_SKIP (asm_out_file, to_byte - total_bytes);
+	      total_bytes = to_byte;
+	    }
+		}
+
+
 
 	  /* Determine size this element should occupy.  */
 	  if (field)
@@ -1946,6 +2010,15 @@ output_constructor (exp, size)
 	    = (next_offset
 	       + (TREE_INT_CST_LOW (DECL_SIZE (field))
 		  * DECL_SIZE_UNIT (field)));
+
+	  if (!first_field_of_bits && 
+		(DECL_OFFSET(field)/BITS_PER_UNIT) != total_bytes)  /* pbl */
+	    {
+	      int to_byte = DECL_OFFSET (field) / BITS_PER_UNIT;
+	      ASM_OUTPUT_SKIP (asm_out_file, to_byte - total_bytes);
+	      total_bytes = to_byte;
+	    }
+		first_field_of_bits = 1;
 
 	  /* If this field does not start in this (or, next) byte,
 	     skip some bytes.  */

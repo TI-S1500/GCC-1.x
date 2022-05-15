@@ -28,6 +28,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "real.h"
 
 
+/* this variable is set if user is using S1500 status register */
+#ifdef ti1500
+extern int have_1500_sr_reg;
+#endif
+
 static int inequality_comparisons_p ();
 int strict_memory_address_p ();
 int memory_address_p ();
@@ -254,7 +259,8 @@ address_operand (op, mode)
      register rtx op;
      enum machine_mode mode;
 {
-  return memory_address_p (mode, op);
+  return (memory_address_p (mode, op)
+	  && (GET_CODE (op) != MEM || !MEM_VOLATILE_P (op) || volatile_ok));
 }
 
 /* Return 1 if OP is a register reference of mode MODE.
@@ -1050,7 +1056,14 @@ constrain_operands (insn_code_num)
 	  /* If this operand did not win somehow,
 	     this alternative loses.  */
 	  if (! win)
+           {
+#ifdef ti1500
+          if (have_1500_sr_reg)
+	     win = 1;
+          else
+#endif
 	    lose = 1;
+           }
 	}
       /* This alternative won; the operands are ok.
 	 Change whichever operands this alternative says to change.  */

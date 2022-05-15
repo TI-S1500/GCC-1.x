@@ -35,6 +35,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 
 
+#ifdef ti1500
+/* Added to give warning messages if GNU C extensions are used */
+extern int allow_extensions;
+#endif
+
 int mark_addressable ();
 static tree convert_for_assignment ();
 static int compparms ();
@@ -884,10 +889,18 @@ build_array_ref (array, index)
 	    return error_mark_node;
 	}
 
+#ifdef ti1500
+      if ((pedantic || !allow_extensions) && !lvalue_p (array))
+#else
       if (pedantic && !lvalue_p (array))
+#endif
 	warning ("ANSI C forbids subscripting non-lvalue array");
 
+#ifdef ti1500
+      if (pedantic || !allow_extensions)
+#else
       if (pedantic)
+#endif
 	{
 	  tree foo = array;
 	  while (TREE_CODE (foo) == COMPONENT_REF)
@@ -1216,6 +1229,14 @@ build_binary_op_nodefault (code, op0, op1, error_code)
       if (code0 == POINTER_TYPE && code1 == POINTER_TYPE
 	  && comp_target_types (dt0, dt1))
 	return pointer_diff (op0, op1);
+#ifdef ti1500
+/* added to make GNU compatible to SVS C compiler     */
+      else if (flag_traditional && (code0 == POINTER_TYPE && code1 == POINTER_TYPE) && (comp_target_types (dt0,dt1) == 0))
+         {
+               warning ("illegal pointer combination");      
+               return pointer_diff (op0, op1);
+         }
+#endif   /* ti1500 */
       /* Handle pointer minus int.  Just like pointer plus int.  */
       else if (code0 == POINTER_TYPE && code1 == INTEGER_TYPE)
 	return pointer_int_sum (MINUS_EXPR, op0, op1);
@@ -1644,7 +1665,11 @@ pointer_int_sum (resultcode, ptrop, intop)
 
   if (TREE_CODE (TREE_TYPE (result_type)) == VOID_TYPE)
     {
+#ifdef ti1500
+      if (pedantic || warn_pointer_arith || !allow_extensions)
+#else
       if (pedantic || warn_pointer_arith)
+#endif
 	warning ("pointer of type `void *' used in arithmetic");
       size_exp = integer_one_node;
     }
@@ -2270,7 +2295,11 @@ build_unary_op (code, xarg, noconvert)
 	case FIX_FLOOR_EXPR:
 	case FIX_ROUND_EXPR:
 	case FIX_CEIL_EXPR:
+#ifdef ti1500
+	  if (pedantic || !allow_extensions)
+#else
 	  if (pedantic)
+#endif
 	    warning ("ANSI C forbids the address of a cast expression");
 	  return convert (build_pointer_type (TREE_TYPE (arg)),
 			  build_unary_op (ADDR_EXPR, TREE_OPERAND (arg, 0),
@@ -2629,7 +2658,11 @@ build_conditional_expr (ifexp, op1, op2)
      make sure it is calculated only once.  */
   if (op1 == 0)
     {
+#ifdef ti1500
+      if (pedantic || !allow_extensions)
+#else
       if (pedantic)
+#endif
 	warning ("ANSI C forbids omitting the middle term of a ?: expression");
       ifexp = op1 = save_expr (ifexp);
     }
@@ -3249,7 +3282,11 @@ store_init_value (decl, init)
     }
   else
     {
+#ifdef ti1500
+      if ((pedantic || !allow_extensions) && TREE_CODE (value) == CONSTRUCTOR)
+#else
       if (pedantic && TREE_CODE (value) == CONSTRUCTOR)
+#endif
 	{
 	  if (! TREE_LITERAL (value))
 	    warning ("aggregate initializer is not constant");

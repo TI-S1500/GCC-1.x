@@ -357,7 +357,8 @@ typedef void (*vfp)();
 static void
 default_new_handler ();
 
-vfp __new_handler = default_new_handler;
+extern (*__new_handler)();
+/* vfp __new_handler = default_new_handler; */
 
 char *
 __builtin_vec_new (p, maxindex, size, ctor)

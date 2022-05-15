@@ -1,0 +1,387 @@
+Changes for GNU CC version 1.37.1, from version 1.37.
+Changes in files that can be reconstructed with tex,
+etags, bison or M-x texinfo-format-buffer have been omitted.
+
+diff -rc2N gcc-1.37/ChangeLog gcc-1.37.1/ChangeLog
+*** gcc-1.37/ChangeLog	Mon Feb 12 11:15:13 1990
+--- gcc-1.37.1/ChangeLog	Wed Feb 21 00:27:05 1990
+***************
+*** 1,2 ****
+--- 1,20 ----
++ Wed Feb 21 00:25:39 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
++ 
++ 	* Version 1.37.1 released.
++ 
++ 	* tm-mips.h (ASM_OUTPUT_ADDR_VEC_ELT and ASM_OUTPUT_ADDR_DIFF_ELT):
++ 	Start label names with $.
++ 
++ Sun Feb 18 13:58:04 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
++ 
++ 	* tm-mips.h (ASM_GENERATE_INTERNAL_LABEL, ASM_OUTPUT_INTERNAL_LABEL):
++ 	Start name with $.
++ 
++ 	* integrate.c (expand_inline_function): Round up size of parm_map.
++ 
++ Sat Feb 17 20:56:05 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
++ 
++ 	* tm-hp9k320.h (CPP_SPEC): Remove _INCLUDE__STDC__.
++ 
+  Sun Feb 11 20:11:25 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
+  
+diff -rc2N gcc-1.37/INSTALL gcc-1.37.1/INSTALL
+*** gcc-1.37/INSTALL	Sun Feb 11 20:00:37 1990
+--- gcc-1.37.1/INSTALL	Wed Feb 21 17:16:19 1990
+***************
+*** 291,297 ****
+  
+            For the Motorola 88000, use `tm-m88k.h'.  The support for
+!           the 88000 has a few unfinished spots because there was no
+!           way to run the output.  Bugs are suspected in handling of
+!           branch-tables and in the function prologue and epilogue.
+  
+            For the 80386, don't use `tm-i386.h' directly.  Use
+--- 291,296 ----
+  
+            For the Motorola 88000, use `tm-m88k.h'.  The support for
+!           the 88000 does not currently work; it requires extensive
+!           changes which we hope to reconcile in version 2.
+  
+            For the 80386, don't use `tm-i386.h' directly.  Use
+***************
+*** 354,363 ****
+       where the problem happens.
+  
+!   6. Optionally, install the library functions for 64-bit integer
+!      arithmetic.  You do this with the command `make gnulib2'.  In
+!      the future this will happen automatically; for now, it is
+!      optional, until we are sure it works on all machines.
+! 
+!   7. If you are using COFF-encapsulation, you must convert `gnulib'
+       to a GNU-format library at this point.  See the file
+       `README-ENCAP' in the directory containing the GNU binary file
+--- 353,357 ----
+       where the problem happens.
+  
+!   6. If you are using COFF-encapsulation, you must convert `gnulib'
+       to a GNU-format library at this point.  See the file
+       `README-ENCAP' in the directory containing the GNU binary file
+***************
+*** 364,368 ****
+       utilities, for directions.
+  
+!   8. Move the first-stage object files and executables into a
+       subdirectory with this command:
+  
+--- 358,362 ----
+       utilities, for directions.
+  
+!   7. Move the first-stage object files and executables into a
+       subdirectory with this command:
+  
+***************
+*** 373,377 ****
+       with `rm -r stage1'.
+  
+!   9. Recompile the compiler with itself, with this command:
+  
+            make CC=stage1/gcc CFLAGS="-g -O -Bstage1/"
+--- 367,371 ----
+       with `rm -r stage1'.
+  
+!   8. Recompile the compiler with itself, with this command:
+  
+            make CC=stage1/gcc CFLAGS="-g -O -Bstage1/"
+***************
+*** 383,387 ****
+            make CC=stage1/gcc CFLAGS="-g -O -Bstage1/ -msoft-float"
+  
+!  10. If you wish to test the compiler by compiling it with itself one
+       more time, do this (in C shell):
+  
+--- 377,381 ----
+            make CC=stage1/gcc CFLAGS="-g -O -Bstage1/ -msoft-float"
+  
+!   9. If you wish to test the compiler by compiling it with itself one
+       more time, do this (in C shell):
+  
+***************
+*** 413,417 ****
+            done
+  
+!  11. Install the compiler driver, the compiler's passes and run-time
+       support.  You can use the following command:
+  
+--- 407,411 ----
+            done
+  
+!  10. Install the compiler driver, the compiler's passes and run-time
+       support.  You can use the following command:
+  
+diff -rc2N gcc-1.37/config/tm-hp9k320.h gcc-1.37.1/config/tm-hp9k320.h
+*** gcc-1.37/config/tm-hp9k320.h	Thu Feb  8 14:16:48 1990
+--- gcc-1.37.1/config/tm-hp9k320.h	Sat Feb 17 20:55:56 1990
+***************
+*** 60,65 ****
+  #define CPP_SPEC \
+  "%{!msoft-float:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}} -D__HPUX_ASM__\
+! %{!traditional:-D_INCLUDE__STDC__}"
+  
+  #else /* default is -msoft-float */
+--- 60,64 ----
+  #define CPP_SPEC \
+  "%{!msoft-float:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}} -D__HPUX_ASM__"
+  
+  #else /* default is -msoft-float */
+***************
+*** 67,72 ****
+  #define CPP_SPEC \
+  "%{m68881:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}} -D__HPUX_ASM__\
+! %{!traditional:-D_INCLUDE__STDC__}"
+  
+  #endif /* default is -msoft-float */
+--- 66,70 ----
+  #define CPP_SPEC \
+  "%{m68881:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}} -D__HPUX_ASM__"
+  
+  #endif /* default is -msoft-float */
+***************
+*** 78,83 ****
+  #define CPP_SPEC \
+  "%{!msoft-float:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}}\
+! %{!traditional:-D_INCLUDE__STDC__}"
+  
+  #else /* default is -msoft-float */
+--- 76,80 ----
+  #define CPP_SPEC \
+  "%{!msoft-float:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}}"
+  
+  #else /* default is -msoft-float */
+***************
+*** 85,90 ****
+  #define CPP_SPEC \
+  "%{m68881:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}}\
+! %{!traditional:-D_INCLUDE__STDC__}"
+  
+  #endif /* default is -msoft-float */
+--- 82,86 ----
+  #define CPP_SPEC \
+  "%{m68881:-D__HAVE_68881__ }\
+! %{!ansi:%{!mc68000:%{!m68000:-Dmc68020}}}"
+  
+  #endif /* default is -msoft-float */
+diff -rc2N gcc-1.37/config/tm-mips.h gcc-1.37.1/config/tm-mips.h
+*** gcc-1.37/config/tm-mips.h	Wed Jan 31 22:37:57 1990
+--- gcc-1.37.1/config/tm-mips.h	Wed Feb 21 00:25:22 1990
+***************
+*** 1669,1673 ****
+  
+  #define ASM_OUTPUT_INTERNAL_LABEL(FILE,PREFIX,NUM)			\
+!   fprintf (FILE, "%s%d:\n", PREFIX, NUM)
+  
+  /* This is how to store into the string LABEL
+--- 1669,1673 ----
+  
+  #define ASM_OUTPUT_INTERNAL_LABEL(FILE,PREFIX,NUM)			\
+!   fprintf (FILE, "$%s%d:\n", PREFIX, NUM)
+  
+  /* This is how to store into the string LABEL
+***************
+*** 1677,1681 ****
+  
+  #define ASM_GENERATE_INTERNAL_LABEL(LABEL,PREFIX,NUM)			\
+!   sprintf (LABEL, "*%s%d", PREFIX, NUM)
+  
+  /* This is how to output an assembler line defining a `double' constant.  */
+--- 1677,1681 ----
+  
+  #define ASM_GENERATE_INTERNAL_LABEL(LABEL,PREFIX,NUM)			\
+!   sprintf (LABEL, "*$%s%d", PREFIX, NUM)
+  
+  /* This is how to output an assembler line defining a `double' constant.  */
+***************
+*** 1716,1720 ****
+  
+  #define ASM_OUTPUT_ADDR_VEC_ELT(FILE, VALUE)				\
+!   fprintf (FILE, "\t.word L%d\n", VALUE)
+  
+  /* This is how to output an element of a case-vector that is relative.
+--- 1716,1720 ----
+  
+  #define ASM_OUTPUT_ADDR_VEC_ELT(FILE, VALUE)				\
+!   fprintf (FILE, "\t.word $L%d\n", VALUE)
+  
+  /* This is how to output an element of a case-vector that is relative.
+***************
+*** 1723,1727 ****
+  
+  #define ASM_OUTPUT_ADDR_DIFF_ELT(FILE, VALUE, REL)			\
+!   fprintf (FILE, "\t.word L%d-L%d\n", VALUE, REL)
+  
+  /* This is how to output an assembler line
+--- 1723,1727 ----
+  
+  #define ASM_OUTPUT_ADDR_DIFF_ELT(FILE, VALUE, REL)			\
+!   fprintf (FILE, "\t.word $L%d-$L%d\n", VALUE, REL)
+  
+  /* This is how to output an assembler line
+diff -rc2N gcc-1.37/cpp.texinfo gcc-1.37.1/cpp.texinfo
+*** gcc-1.37/cpp.texinfo	Tue Jan  2 01:30:15 1990
+--- gcc-1.37.1/cpp.texinfo	Wed Feb 21 17:17:47 1990
+***************
+*** 623,630 ****
+  If you use the macro name followed by something other than an
+  open-parenthesis (after ignoring any spaces, tabs and comments that
+! follow), it is not a call to the macro, and the preprocessor does not
+! change what you have written.  Therefore, it is possible for the same name
+! to be a variable or function in your program as well as a macro, and you
+! can choose in each instance whether to refer to the macro (if an actual
+  argument list follows) or the variable or function (if an argument list
+  does not follow).
+--- 623,630 ----
+  If you use the macro name followed by something other than an
+  open-parenthesis (after ignoring any spaces, tabs and comments that
+! follow), it is not a call to the macro, and the preprocessor leaves the
+! name unaltered.  Therefore, it is possible for the same name to be a
+! variable or function in your program as well as a macro, and you can
+! choose in each instance whether to refer to the macro (if an actual
+  argument list follows) or the variable or function (if an argument list
+  does not follow).
+***************
+*** 1673,1679 ****
+  @findex #if
+  A conditional in the C preprocessor begins with a @dfn{conditional
+! command}: @samp{#if}, @samp{#ifdef} or @samp{#ifndef}.@xref{Conditionals},
+! for info on @samp{#ifdef} and @samp{#ifndef}; only @samp{#if} is explained
+! here.
+  
+  @menu
+--- 1673,1679 ----
+  @findex #if
+  A conditional in the C preprocessor begins with a @dfn{conditional
+! command}: @samp{#if}, @samp{#ifdef} or @samp{#ifndef}.
+! @xref{Conditionals-Macros}, for info on @samp{#ifdef} and
+! @samp{#ifndef}; only @samp{#if} is explained here.
+  
+  @menu
+diff -rc2N gcc-1.37/gcc.texinfo gcc-1.37.1/gcc.texinfo
+*** gcc-1.37/gcc.texinfo	Sun Feb 11 14:13:45 1990
+--- gcc-1.37.1/gcc.texinfo	Wed Feb 21 12:48:48 1990
+***************
+*** 43,49 ****
+  @center Richard M. Stallman
+  @sp 3
+! @center last updated 17 January 1990
+  @sp 1
+! @center for version 1.37
+  @page
+  @vskip 0pt plus 1filll
+--- 43,49 ----
+  @center Richard M. Stallman
+  @sp 3
+! @center last updated 21 February 1990
+  @sp 1
+! @center for version 1.37.1
+  @page
+  @vskip 0pt plus 1filll
+***************
+*** 1022,1028 ****
+  
+  @item -nostdlib
+! Don't use the standard system libraries and startup files when
+! linking.  Only the files you specify (plus @file{gnulib}) will be
+! passed to the linker.
+  
+  @item -m@var{machinespec}
+--- 1022,1027 ----
+  
+  @item -nostdlib
+! Don't use the standard system libraries and startup files when linking.
+! Only the files you specify will be passed to the linker.
+  
+  @item -m@var{machinespec}
+***************
+*** 1715,1721 ****
+  
+  For the Motorola 88000, use @file{tm-m88k.h}.  The support for the
+! 88000 has a few unfinished spots because there was no way to run the
+! output.  Bugs are suspected in handling of branch-tables and in the
+! function prologue and epilogue.
+  
+  For the 80386, don't use @file{tm-i386.h} directly.  Use
+--- 1714,1719 ----
+  
+  For the Motorola 88000, use @file{tm-m88k.h}.  The support for the
+! 88000 does not currently work; it requires extensive changes which
+! we hope to reconcile in version 2.
+  
+  For the 80386, don't use @file{tm-i386.h} directly.  Use
+***************
+*** 1782,1791 ****
+  
+  @item
+- Optionally, install the library functions for 64-bit integer
+- arithmetic.  You do this with the command @samp{make gnulib2}.  In the
+- future this will happen automatically; for now, it is optional, until
+- we are sure it works on all machines.
+- 
+- @item
+  If you are using COFF-encapsulation, you must convert @file{gnulib} to
+  a GNU-format library at this point.  See the file @file{README-ENCAP}
+--- 1780,1783 ----
+***************
+*** 2245,2253 ****
+  
+  There are several noteworthy incompatibilities between GNU C and most
+! existing (non-ANSI) versions of C.
+! 
+! Ultimately our intention is that the @samp{-traditional} option will
+! eliminate most of these incompatibilities by telling GNU C to behave
+! like the other C compilers.
+  
+  @itemize @bullet
+--- 2237,2243 ----
+  
+  There are several noteworthy incompatibilities between GNU C and most
+! existing (non-ANSI) versions of C.  The @samp{-traditional} option
+! eliminates most of these incompatibilities, @emph{but not all}, by
+! telling GNU C to behave like older C compilers.
+  
+  @itemize @bullet
+diff -rc2N gcc-1.37/integrate.c gcc-1.37.1/integrate.c
+*** gcc-1.37/integrate.c	Fri Feb  2 17:51:39 1990
+--- gcc-1.37.1/integrate.c	Sun Feb 18 12:42:10 1990
+***************
+*** 730,738 ****
+    bzero (reg_map, max_regno * sizeof (rtx));
+  
+!   parm_map = (rtx *)alloca ((FUNCTION_ARGS_SIZE (header)
+! 			     / UNITS_PER_WORD) * sizeof (rtx));
+!   bzero (parm_map, ((FUNCTION_ARGS_SIZE (header)
+! 		     / UNITS_PER_WORD)
+! 		    * sizeof (rtx)));
+  
+    /* Note that expand_expr (called above) can clobber first_parm_offset.  */
+--- 730,737 ----
+    bzero (reg_map, max_regno * sizeof (rtx));
+  
+!   parm_map = (rtx *)alloca ((FUNCTION_ARGS_SIZE (header) + UNITS_PER_WORD - 1)
+! 			    / UNITS_PER_WORD * sizeof (rtx));
+!   bzero (parm_map, ((FUNCTION_ARGS_SIZE (header) + UNITS_PER_WORD - 1)
+! 		    / UNITS_PER_WORD * sizeof (rtx)));
+  
+    /* Note that expand_expr (called above) can clobber first_parm_offset.  */
+diff -rc2N gcc-1.37/version.c gcc-1.37.1/version.c
+*** gcc-1.37/version.c	Thu Feb  8 16:30:08 1990
+--- gcc-1.37.1/version.c	Mon Feb 19 12:27:42 1990
+***************
+*** 1,1 ****
+! char *version_string = "1.37";
+--- 1,1 ----
+! char *version_string = "1.37.1";

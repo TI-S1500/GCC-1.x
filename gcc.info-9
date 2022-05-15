@@ -11,18 +11,17 @@ preserved on all copies.
 
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided also
-that the sections entitled ``GNU General Public License'' and
-``Protect Your Freedom--Fight `Look And Feel''' are included exactly
-as in the original, and provided that the entire resulting derived
-work is distributed under the terms of a permission notice identical
-to this one.
+that the section entitled ``GNU General Public License'' is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
 
 Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
-versions, except that the sections entitled ``GNU General Public
-License'' and ``Protect Your Freedom--Fight `Look And Feel''' and
-this permission notice may be included in translations approved by
-the Free Software Foundation instead of in the original English.
+versions, except that the section entitled ``GNU General Public
+License'' and this permission notice may be included in translations
+approved by the Free Software Foundation instead of in the original
+English.
 
 
 
@@ -90,15 +89,6 @@ Describing Stack Layout
      stack pointer value.  (That value is itself computed by adding
      the value of `STACK_POINTER_OFFSET' to the stack pointer
      register.)
-
-`REG_PARM_STACK_SPACE'
-     Define this macro if functions should assume that stack space
-     has been allocated for arguments even when their values are
-     passed in registers.
-
-     The actual allocation of such space would be done either by the
-     call instruction or by the function prologue, or by defining
-     FIRST_PARM_CALLER_OFFSET.
 
 `STACK_ARGS_ADJUST (SIZE)'
      Define this macro if the machine requires padding on the stack
@@ -757,7 +747,7 @@ Parameters for Delayed Branch Optimization
 
 
 
-File: gcc.info,  Node: Condition Code,  Next: Cross-compilation,  Prev: Delayed Branch,  Up: Machine Macros
+File: gcc.info,  Node: Condition Code,  Next: Misc,  Prev: Delayed Branch,  Up: Machine Macros
 
 Condition Code Information
 ==========================
@@ -777,10 +767,8 @@ machine-specific information by defining `CC_STATUS_MDEP'.
      component of `cc_status'.  It defaults to `int'.
 
 `CC_STATUS_MDEP_INIT'
-     A C expression to initialize the `mdep' field to ``empty''.  The
-     default definition does nothing, since most machines don't use
-     the field anyway.  If you want to use the field, you should
-     probably define this macro to initialize it.
+     A C expression for the initial value of the `mdep' field.  It
+     defaults to 0.
 
 `NOTICE_UPDATE_CC (EXP, INSN)'
      A C compound statement to set the components of `cc_status'
@@ -818,7 +806,7 @@ File: gcc.info,  Node: Cross-compilation,  Next: Misc,  Prev: Condition Code,  U
 Cross Compilation and Floating-Point Format
 ===========================================
 
-While all modern machines use 2's complement representation for
+While all modern machines use 2's compliment representation for
 integers, there are a variety of representations for floating point
 numbers.  This means that in a cross-compiler the representation of
 floating point numbers in the compiled program may be different from
@@ -1052,7 +1040,7 @@ Miscellaneous Parameters
 `STORE_FLAG_VALUE'
      A C expression for the value stored by a store-flag instruction
      (`sCOND') when the condition is true.  This is usually 1 or -1;
-     it is required to be an odd number or a negative number.
+     it is required to be an odd number.
 
      Do not define `STORE_FLAG_VALUE' if the machine has no
      store-flag instructions.
@@ -1107,8 +1095,8 @@ Miscellaneous Parameters
 `USE_C_ALLOCA'
      Define this macro to indicate that the compiler is running with
      the `alloca' implemented in C.  This version of `alloca' can be
-     found in the file `alloca.c'; to use it, you must also alter the
-     `Makefile' variable `ALLOCA'.
+     found in the file `alloca.c'; to use it, you must also edit the
+     `Makefile'.
 
      This macro, unlike most, describes the machine that the compiler
      is running on, rather than the one the compiler is compiling for.

@@ -1,5 +1,5 @@
 
-/*  A Bison parser, made from ../gcc-1.37/cexp.y  */
+/*  A Bison parser, made from ./cexp.y  */
 
 #define	INT	258
 #define	CHAR	259
@@ -15,7 +15,7 @@
 #define	RSH	269
 #define	UNARY	270
 
-#line 26 "../gcc-1.37/cexp.y"
+#line 26 "./cexp.y"
 
 #include "config.h"
 #include <setjmp.h>
@@ -34,7 +34,7 @@
 #define CHAR_TYPE_SIZE BITS_PER_UNIT
 #endif
 
-#line 45 "../gcc-1.37/cexp.y"
+#line 45 "./cexp.y"
 typedef union {
   struct constant {long value; int unsignedp;} integer;
   int voidval;
@@ -531,38 +531,38 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 75 "../gcc-1.37/cexp.y"
+#line 75 "./cexp.y"
 { expression_value = yyvsp[0].integer.value; ;
     break;}
 case 3:
-#line 81 "../gcc-1.37/cexp.y"
+#line 81 "./cexp.y"
 { yyval.integer = yyvsp[0].integer; ;
     break;}
 case 4:
-#line 86 "../gcc-1.37/cexp.y"
+#line 86 "./cexp.y"
 { yyval.integer.value = - yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[0].integer.unsignedp; ;
     break;}
 case 5:
-#line 89 "../gcc-1.37/cexp.y"
+#line 89 "./cexp.y"
 { yyval.integer.value = ! yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = 0; ;
     break;}
 case 6:
-#line 92 "../gcc-1.37/cexp.y"
+#line 92 "./cexp.y"
 { yyval.integer = yyvsp[0].integer; ;
     break;}
 case 7:
-#line 94 "../gcc-1.37/cexp.y"
+#line 94 "./cexp.y"
 { yyval.integer.value = ~ yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[0].integer.unsignedp; ;
     break;}
 case 8:
-#line 97 "../gcc-1.37/cexp.y"
+#line 97 "./cexp.y"
 { yyval.integer = yyvsp[-1].integer; ;
     break;}
 case 9:
-#line 102 "../gcc-1.37/cexp.y"
+#line 102 "./cexp.y"
 { yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp;
 			  if (yyval.integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value * yyvsp[0].integer.value;
@@ -570,7 +570,7 @@ case 9:
 			    yyval.integer.value = yyvsp[-2].integer.value * yyvsp[0].integer.value; ;
     break;}
 case 10:
-#line 108 "../gcc-1.37/cexp.y"
+#line 108 "./cexp.y"
 { if (yyvsp[0].integer.value == 0)
 			    {
 			      error ("division by zero in #if");
@@ -583,7 +583,7 @@ case 10:
 			    yyval.integer.value = yyvsp[-2].integer.value / yyvsp[0].integer.value; ;
     break;}
 case 11:
-#line 119 "../gcc-1.37/cexp.y"
+#line 119 "./cexp.y"
 { if (yyvsp[0].integer.value == 0)
 			    {
 			      error ("division by zero in #if");
@@ -596,17 +596,17 @@ case 11:
 			    yyval.integer.value = yyvsp[-2].integer.value % yyvsp[0].integer.value; ;
     break;}
 case 12:
-#line 130 "../gcc-1.37/cexp.y"
+#line 130 "./cexp.y"
 { yyval.integer.value = yyvsp[-2].integer.value + yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 13:
-#line 133 "../gcc-1.37/cexp.y"
+#line 133 "./cexp.y"
 { yyval.integer.value = yyvsp[-2].integer.value - yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 14:
-#line 136 "../gcc-1.37/cexp.y"
+#line 136 "./cexp.y"
 { yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp;
 			  if (yyval.integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value << yyvsp[0].integer.value;
@@ -614,7 +614,7 @@ case 14:
 			    yyval.integer.value = yyvsp[-2].integer.value << yyvsp[0].integer.value; ;
     break;}
 case 15:
-#line 142 "../gcc-1.37/cexp.y"
+#line 142 "./cexp.y"
 { yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp;
 			  if (yyval.integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value >> yyvsp[0].integer.value;
@@ -622,17 +622,17 @@ case 15:
 			    yyval.integer.value = yyvsp[-2].integer.value >> yyvsp[0].integer.value; ;
     break;}
 case 16:
-#line 148 "../gcc-1.37/cexp.y"
+#line 148 "./cexp.y"
 { yyval.integer.value = (yyvsp[-2].integer.value == yyvsp[0].integer.value);
 			  yyval.integer.unsignedp = 0; ;
     break;}
 case 17:
-#line 151 "../gcc-1.37/cexp.y"
+#line 151 "./cexp.y"
 { yyval.integer.value = (yyvsp[-2].integer.value != yyvsp[0].integer.value);
 			  yyval.integer.unsignedp = 0; ;
     break;}
 case 18:
-#line 154 "../gcc-1.37/cexp.y"
+#line 154 "./cexp.y"
 { yyval.integer.unsignedp = 0;
 			  if (yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value <= yyvsp[0].integer.value;
@@ -640,7 +640,7 @@ case 18:
 			    yyval.integer.value = yyvsp[-2].integer.value <= yyvsp[0].integer.value; ;
     break;}
 case 19:
-#line 160 "../gcc-1.37/cexp.y"
+#line 160 "./cexp.y"
 { yyval.integer.unsignedp = 0;
 			  if (yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value >= yyvsp[0].integer.value;
@@ -648,7 +648,7 @@ case 19:
 			    yyval.integer.value = yyvsp[-2].integer.value >= yyvsp[0].integer.value; ;
     break;}
 case 20:
-#line 166 "../gcc-1.37/cexp.y"
+#line 166 "./cexp.y"
 { yyval.integer.unsignedp = 0;
 			  if (yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value < yyvsp[0].integer.value;
@@ -656,7 +656,7 @@ case 20:
 			    yyval.integer.value = yyvsp[-2].integer.value < yyvsp[0].integer.value; ;
     break;}
 case 21:
-#line 172 "../gcc-1.37/cexp.y"
+#line 172 "./cexp.y"
 { yyval.integer.unsignedp = 0;
 			  if (yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp)
 			    yyval.integer.value = (unsigned) yyvsp[-2].integer.value > yyvsp[0].integer.value;
@@ -664,45 +664,45 @@ case 21:
 			    yyval.integer.value = yyvsp[-2].integer.value > yyvsp[0].integer.value; ;
     break;}
 case 22:
-#line 178 "../gcc-1.37/cexp.y"
+#line 178 "./cexp.y"
 { yyval.integer.value = yyvsp[-2].integer.value & yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 23:
-#line 181 "../gcc-1.37/cexp.y"
+#line 181 "./cexp.y"
 { yyval.integer.value = yyvsp[-2].integer.value ^ yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 24:
-#line 184 "../gcc-1.37/cexp.y"
+#line 184 "./cexp.y"
 { yyval.integer.value = yyvsp[-2].integer.value | yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 25:
-#line 187 "../gcc-1.37/cexp.y"
+#line 187 "./cexp.y"
 { yyval.integer.value = (yyvsp[-2].integer.value && yyvsp[0].integer.value);
 			  yyval.integer.unsignedp = 0; ;
     break;}
 case 26:
-#line 190 "../gcc-1.37/cexp.y"
+#line 190 "./cexp.y"
 { yyval.integer.value = (yyvsp[-2].integer.value || yyvsp[0].integer.value);
 			  yyval.integer.unsignedp = 0; ;
     break;}
 case 27:
-#line 193 "../gcc-1.37/cexp.y"
+#line 193 "./cexp.y"
 { yyval.integer.value = yyvsp[-4].integer.value ? yyvsp[-2].integer.value : yyvsp[0].integer.value;
 			  yyval.integer.unsignedp = yyvsp[-2].integer.unsignedp || yyvsp[0].integer.unsignedp; ;
     break;}
 case 28:
-#line 196 "../gcc-1.37/cexp.y"
+#line 196 "./cexp.y"
 { yyval.integer = yylval.integer; ;
     break;}
 case 29:
-#line 198 "../gcc-1.37/cexp.y"
+#line 198 "./cexp.y"
 { yyval.integer = yylval.integer; ;
     break;}
 case 30:
-#line 200 "../gcc-1.37/cexp.y"
+#line 200 "./cexp.y"
 { yyval.integer.value = 0;
 			  yyval.integer.unsignedp = 0; ;
     break;}
@@ -859,7 +859,7 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 203 "../gcc-1.37/cexp.y"
+#line 203 "./cexp.y"
 
 
 /* During parsing of a C expression, the pointer to the next character

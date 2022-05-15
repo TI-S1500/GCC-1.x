@@ -93,7 +93,7 @@ struct argdata;
 
 int do_define (), do_line (), do_include (), do_undef (), do_error (),
   do_pragma (), do_if (), do_xifdef (), do_else (),
-  do_elif (), do_endif (), do_sccs (), do_once ();
+  do_elif (), do_endif (), do_sccs (), do_once (), do_ident();
 
 struct hashnode *install ();
 struct hashnode *lookup ();
@@ -181,11 +181,20 @@ int warn_trigraphs;
 
 int traditional;
 
+#ifdef ti1500
+/* added a special preprocessor mode for ti1500 */
+int timode=0;
+#endif
+
 /* Nonzero causes output not to be done,
    but directives such as #define that have side effects
    are still obeyed.  */
 
 int no_output;
+
+/* Flag is set if the program is compiled with -g option */
+
+  int gdb_flag = 0;
 
 /* I/O buffer structure.
    The `fname' field is nonzero for source files and #include files
@@ -321,6 +330,9 @@ struct definition {
     struct reflist *next;
     char stringify;		/* nonzero if this arg was preceded by a
 				   # operator. */
+#ifdef ti1500
+    int stringify1;      /* 1 if arg is preceded by # and also have traditional string processing */
+#endif
     char raw_before;		/* Nonzero if a ## operator before arg. */
     char raw_after;		/* Nonzero if a ## operator after arg. */
     int nchars;			/* Number of literal chars to copy before
@@ -442,6 +454,12 @@ struct directive directive_table[] = {
   {  5, do_error, "error", T_ERROR},
 #ifdef SCCS_DIRECTIVE
   {  4, do_sccs, "sccs", T_SCCS},
+#endif
+#ifdef ti1500
+ /* added for #ident directive for TI S1500 */
+  {  5, do_ident, "ident", T_IDENT,0,0,1},
+#else
+  {  5, do_ident, "ident", T_IDENT},
 #endif
   {  6, do_pragma, "pragma", T_PRAGMA, 0, 0, 1},
   {  -1, 0, "", T_UNUSED},
@@ -775,11 +793,28 @@ main (argc, argv)
 	  break;
 	}	/* else fall through into error */
 
+      case 'g': /* put code for flushing out the stdout when debugging
+                   the program     */
+	       /* changing it for compling bsh */
+                /*gdb_flag = 1;*/
+                gdb_flag = 0;
+                break;
+
       default:
 	fatal ("Invalid option `%s'", argv[i]);
       }
     }
   }
+
+/* Added for TI S1500 OS and com software compilation -- perform
+   traditional preprocessing unless -ansi or -pedantic option
+   are given -- Shawn Islam    */
+
+#ifdef ti1500
+  
+  if ((no_trigraphs == 1) && (pedantic == 0))
+      timode = 1;
+#endif
 
   /* Now that dollars_in_ident is known, initialize is_idchar.  */
   initialize_char_syntax ();
@@ -1242,7 +1277,7 @@ rescan (op, output_marks)
      int output_marks;
 {
   /* Character being scanned in main loop.  */
-  register U_CHAR c;
+U_CHAR c;
 
   /* Length of pending accumulated identifier.  */
   register int ident_length = 0;
@@ -1254,13 +1289,13 @@ rescan (op, output_marks)
   FILE_BUF *ip;
 
   /* Pointer for scanning input.  */
-  register U_CHAR *ibp;
+/*  register */ U_CHAR *ibp;
 
   /* Pointer to end of input.  End of scan is controlled by LIMIT.  */
-  register U_CHAR *limit;
+/*  register */ U_CHAR *limit;
 
   /* Pointer for storing output.  */
-  register U_CHAR *obp;
+ /* register */ U_CHAR *obp;
 
   /* REDO_CHAR is nonzero if we are processing an identifier
      after backing up over the terminating character.
@@ -1280,6 +1315,20 @@ rescan (op, output_marks)
 
   /* Record position of last `real' newline.  */
   U_CHAR *beg_of_line;
+
+#ifdef ti1500
+U_CHAR *matchstr = (unsigned char *)"rintf(";
+char check_prin[30];
+char *prin_qptr;
+int checkstr = -1;
+unsigned char prev_c;
+unsigned char prev_cc;
+unsigned char follow_c;
+int got_prin = 0;
+int look_for_end = 0;
+int right_prin=0;
+int found1 =0, found2=0;
+#endif
 
 /* Pop the innermost input stack level, assuming it is a macro expansion.  */
 
@@ -1313,8 +1362,67 @@ do { ip = &instack[indepth];		\
     abort ();
 
   while (1) {
+    prev_cc = prev_c;
+    prev_c = c;
     c = *ibp++;
-    *obp++ = c;
+    follow_c = *ibp;
+    if ( prev_c == ';' || prev_c == '{')
+      {
+      found1 = 1;
+      found2 = 0;
+    }
+
+    if (found1)
+      {
+	if ((prev_c != ' ') && (prev_c != '\t') && (prev_c != '\n') && (prev_c != ';'))
+             found2 = 1;
+      }
+
+/* Special code for flushing the stdout in case of ti1500 and in case
+   of the program beging debugged      */
+
+#ifdef ti1500
+ if (gdb_flag)
+  {
+    if (c == 'p')
+     {
+       got_prin = (((prev_c == ' ') || (prev_c == '\n') || (prev_c == '\t') ||
+                 (prev_c == '\v') || (prev_c == '\0') || (prev_c == '\b') ||
+                 (prev_c == '\r') || (prev_c == '\f') || (prev_c == '\a') ||
+                 (prev_c == ';') || (prev_c == '{') || (prev_c == '}')) && 
+                 ((prev_cc != ')') || ((prev_cc == ')') && (prev_c == ';'))));
+       checkstr = strncmp(ibp,matchstr,6);
+       if ((checkstr == 0) && got_prin)
+         {
+           strncpy(check_prin,ibp,20);
+           
+            prin_qptr = (char *)strrchr(check_prin,'\"');
+            if (prin_qptr)
+                right_prin = 1;
+            else
+                right_prin = 0;
+           }
+       if ((checkstr == 0) && got_prin && right_prin && !found2)
+         {
+           *obp++ = '{';
+           look_for_end = 1;
+          }
+       }
+     }   /* end of if gdb_flag */
+    if ((c == ';') && look_for_end && gdb_flag)
+     {
+      *obp++ = c;
+      *obp++ = 'f'; *obp++ = 'f'; *obp++ = 'l'; *obp++ = 'u'; *obp++ = 's';
+      *obp++ = 'h'; *obp++ = '('; *obp++ = ' '; *obp++ = '('; *obp++ = '&';
+      *obp++ = '_'; *obp++ = 'i'; *obp++ = 'o'; *obp++ = 'b'; *obp++ = '[';
+      *obp++ = '1'; *obp++ = ']'; *obp++ = ')'; *obp++ = ' '; *obp++ = ')';
+      *obp++ = ';';
+      *obp++ = '}';
+      look_for_end = 0;
+      }
+     else
+#endif       /* special code for flushing the stdout for ti1500 */
+       *obp++ = c;
 
     switch (c) {
     case '\\':
@@ -1426,7 +1534,7 @@ do { ip = &instack[indepth];		\
 
       while (1) {
 	if (ibp >= limit) {
-	  if (traditional) {
+	  if (timode || traditional) {
 	    if (ip->macro != 0) {
 	      /* try harder: this string crosses a macro expansion boundary */
 	      POPMACRO;
@@ -1445,6 +1553,7 @@ do { ip = &instack[indepth];		\
 	  ++op->lineno;
 	  /* Traditionally, end of line ends a string constant with no error.
 	     So exit the loop and record the new line.  */
+	/* Took the timode out from here -- Shawn Islam */
 	  if (traditional) {
 	    beg_of_line = ibp;
 	    goto while2end;
@@ -1679,7 +1788,9 @@ do { ip = &instack[indepth];		\
 	       If the arg gets stringified, newline space makes nothing.  */
 	    *obp++ = *ibp++;
 	  }
-	} else abort ();	/* Newline followed by something random?  */
+	} else /* abort ();*/	/* Newline followed by something random?  */
+	    error_with_line (line_for_error (start_line),
+		"Newline followed by random received");
 	break;
       }
 
@@ -1713,7 +1824,7 @@ do { ip = &instack[indepth];		\
 	ibp--;
 	/* If traditional, and we have an identifier that ends here,
 	   process it now, so we get the right error for recursion.  */
-	if (traditional && ident_length
+	if ((traditional) && ident_length
 	    && ! is_idchar[*instack[indepth - 1].bufp]) {
 	  redo_char = 1;
 	  goto randomchar;
@@ -1845,7 +1956,7 @@ randomchar:
 		    if (put_out_comments) {
 		      *obp++ = '/';
 		      *obp++ = '*';
-		    } else if (! traditional) {
+		    } else if (!traditional) {
 		      *obp++ = ' ';
 		    }
 		    ibp += 2;
@@ -2095,7 +2206,7 @@ handle_directive (ip, op)
 
   /* A line of just `#' becomes blank.  */
 
-  if (traditional && ident_length == 0 && *after_ident == '\n') {
+  if ((traditional) && ident_length == 0 && *after_ident == '\n') {
     ip->bufp = after_ident;
     return 1;
   }
@@ -2112,7 +2223,7 @@ handle_directive (ip, op)
 
       /* Nonzero means do not delete comments within the directive.
 	 #define needs this when -traditional.  */
-      int keep_comments = traditional && kt->traditional_comments;
+      int keep_comments = (traditional) && kt->traditional_comments;
 
       /* Find the end of this command (first newline not backslashed
 	 and not in a string or comment).
@@ -2140,7 +2251,7 @@ handle_directive (ip, op)
 	     message due to unterminated string.  Skip everything and pretend
 	     we called the directive.  */
 	  if (unterminated) {
-	    if (traditional) {
+	    if (timode || traditional) {
 	      /* Traditional preprocessing permits unterminated strings.  */
 	      ip->bufp = bp;
 	      goto endloop1;
@@ -2686,7 +2797,7 @@ finclude (f, fname, op)
   fp->if_stack = if_stack;
 
   if (st_mode & S_IFREG) {
-    fp->buf = (U_CHAR *) alloca (st_size + 2);
+    fp->buf = (U_CHAR *) my_alloca (st_size + 2);
     fp->bufp = fp->buf;
 
     /* Read the file contents, knowing that st_size is an upper bound
@@ -3028,6 +3139,10 @@ collect_expansion (buf, end, nargs, arglist)
   U_CHAR *stringify = 0;
   int maxsize;
   int expected_delimiter = '\0';
+#ifdef ti1500
+  int tistringify = 0;
+   int already_string = 0;
+#endif
 
   /* Scan thru the replacement list, ignoring comments and quoted
      strings, picking up on the macro calls.  It does a linear search
@@ -3073,7 +3188,7 @@ collect_expansion (buf, end, nargs, arglist)
 
     *exp_p++ = c;
 
-    if (!traditional) {
+    if (!timode && !traditional) {
       switch (c) {
       case '\'':
       case '\"':
@@ -3133,6 +3248,9 @@ collect_expansion (buf, end, nargs, arglist)
       switch (c) {
       case '\'':
       case '\"':
+#ifdef ti1500
+          already_string = 1;
+#endif
 	if (expected_delimiter != '\0') {
 	  if (c == expected_delimiter)
 	    expected_delimiter = '\0';
@@ -3164,6 +3282,39 @@ collect_expansion (buf, end, nargs, arglist)
 	  concat = p;
 	}
 	break;
+
+#ifdef ti1500
+      case '#':
+       if (timode && (!already_string) && !traditional)
+       {   
+	if (p < limit && *p == '#') {
+	  /* ##: concatenate preceding and following tokens.  */
+	  /* Take out the first #, discard preceding whitespace.  */
+	  exp_p--;
+	  while (exp_p > lastp && is_hor_space[exp_p[-1]])
+	    --exp_p;
+	  /* Skip the second #.  */
+	  p++;
+	  /* Discard following whitespace.  */
+	  SKIP_WHITE_SPACE (p);
+	  concat = p;
+	} else {
+	  /* Single #: stringify following argument ref.
+	     Don't leave the # in the expansion.  */
+	  exp_p--;
+	  SKIP_WHITE_SPACE (p);
+	  if (p == limit || ! is_idstart[*p] || nargs <= 0)
+	    error ("# operator should be followed by a macro argument name\n");
+	  else
+            {
+              stringify = p;
+              tistringify = 1;
+              already_string = 1;
+            }
+	}
+       }   /* timode */
+	break;
+#endif
       }
     }
 
@@ -3190,8 +3341,20 @@ collect_expansion (buf, end, nargs, arglist)
 	    tpat->next = NULL;
 	    tpat->raw_before = concat == id_beg;
 	    tpat->raw_after = 0;
-	    tpat->stringify = (traditional ? expected_delimiter != '\0'
+
+/*NEW5*/
+#ifdef ti1500
+          if (tistringify)
+#endif
+	    tpat->stringify = ((traditional) ? expected_delimiter != '\0'
 			       : stringify == id_beg);
+#ifdef ti1500
+          else
+	    tpat->stringify = ((timode || traditional) ? expected_delimiter != '\0'
+			       : stringify == id_beg);
+          if (tistringify && (stringify == id_beg))
+             tpat->stringify1 = 1;
+#endif
 
 	    if (endpat == NULL)
 	      defn->pattern = tpat;
@@ -3221,7 +3384,7 @@ collect_expansion (buf, end, nargs, arglist)
 	while (p != lim1)
 	  *exp_p++ = *p++;
 	if (stringify == id_beg)
-	  error ("# operator should be followed by a macro argument name\n");
+	  error ("# operator should be followed by a macro argument name1\n");
       }
     }
   }
@@ -3232,7 +3395,7 @@ collect_expansion (buf, end, nargs, arglist)
       *exp_p++ = '\n';
       *exp_p++ = *limit++;
     }
-  } else if (!traditional) {
+   } else if (!timode && !traditional) { 
     /* There is no trailing whitespace, so invent some.  */
     *exp_p++ = '\n';
     *exp_p++ = ' ';
@@ -3472,6 +3635,24 @@ do_sccs ()
   if (pedantic)
     error ("ANSI C does not allow #sccs");
 }
+
+/* added #ident for TI S1500   -- Shawn Islam */
+do_ident (buf, limit, op, keyword)
+     U_CHAR *buf, *limit;
+     FILE_BUF *op;
+     struct directive *keyword;
+{
+
+  /* printout #ident in preprocesed file -- Shawn Islam */
+  if (pedantic)
+    error ("ANSI C does not allow #ident");
+/*
+ fprintf(stderr, "do_ident: buf = 0x%x limit = 0x%x op = 0x%x keyword = 0x%x\n",
+	buf, limit, op, keyword);
+ fprintf(stderr,"\ndo_ident:%s\n",keyword->name);
+*/
+
+}
 
 /*
  * handle #if command by
@@ -3586,7 +3767,8 @@ do_xifdef (buf, limit, op, keyword)
 
   if (end == buf) {
     skip = (keyword->type == T_IFDEF);
-    if (! traditional)
+/*NEW2*/
+    if (!traditional)
       warning (end == limit ? "#%s with no argument"
 	       : "#%s argument starts with punctuation",
 	       keyword->name);
@@ -4018,7 +4200,7 @@ skip_quoted_string (bp, limit, start_line, count_newlines, backslash_newlines_p,
       }
       bp++;
     } else if (c == '\n') {
-      if (traditional) {
+      if (timode || traditional) {
  	/* Unterminated strings and character constants are 'legal'.  */
  	bp--;	/* Don't consume the newline. */
  	if (eofp)
@@ -4033,7 +4215,7 @@ skip_quoted_string (bp, limit, start_line, count_newlines, backslash_newlines_p,
 	  *eofp = 1;
 	break;
       }
-      if (traditional) {	/* Unterminated strings are 'legal'.  */
+      if (timode || traditional) {	/* Unterminated strings are 'legal'.  */
 	if (eofp)
 	  *eofp = 1;
 	break;
@@ -4195,7 +4377,7 @@ macroexpand (hp, op)
       error ("arguments given to macro `%s'", hp->name);
     else if (i < nargs) {
       /* traditional C allows foo() if foo wants one argument.  */
-      if (nargs == 1 && i == 0 && traditional)
+      if (nargs == 1 && i == 0 && (traditional))
 	;
       else if (i == 0)
 	error ("no args to macro `%s'", hp->name);
@@ -4261,8 +4443,17 @@ macroexpand (hp, op)
 	  while (i < arglen
 		 && (c = arg->raw[arglen - 1], is_space[c]))
 	    arglen--;
-	  if (!traditional)
-	    xbuf[totlen++] = '\"'; /* insert beginning quote */
+/*NEW5*/
+#ifdef ti1500 
+	    if ((ap->stringify1 == 1) && !traditional)
+#else
+	    if (!traditional)
+#endif
+	      xbuf[totlen++] = '\"'; /* insert beginning quote */
+#ifdef ti1500
+            else if (!timode && !traditional)
+	      xbuf[totlen++] = '\"'; /* insert beginning quote */
+#endif
 	  for (; i < arglen; i++) {
 	    c = arg->raw[i];
 
@@ -4308,8 +4499,19 @@ macroexpand (hp, op)
 	      totlen += 4;
 	    }
 	  }
+/*NEW5*/
+
+        
+#ifdef ti1500
+	  if ((ap->stringify1 == 1) && !traditional)
+#else
 	  if (!traditional)
+#endif
 	    xbuf[totlen++] = '\"'; /* insert ending quote */
+#ifdef ti1500
+            else if (!timode && !traditional)
+	    xbuf[totlen++] = '\"'; /* insert ending quote */
+#endif
 	} else if (ap->raw_before || ap->raw_after) {
 	  U_CHAR *p1 = arg->raw;
 	  U_CHAR *l1 = p1 + arg->raw_length;
@@ -4393,6 +4595,7 @@ macroexpand (hp, op)
        #define foo(x,y) bar(x(y,0), y)
        foo(foo, baz)  */
 
+/*NEW*/
     if (!traditional)
       hp->type = T_DISABLED;
   }
@@ -4508,7 +4711,8 @@ macarg (argptr)
       buf++;
     while (buf != lim && is_space[lim[-1]])
       lim--;
-    totlen = traditional ? 0 : 2;	/* Count opening and closing quote.  */
+/*NEW*/
+    totlen = (traditional) ? 0 : 2;	/* Count opening and closing quote.  */
     while (buf != lim) {
       register U_CHAR c = *buf++;
       totlen++;
@@ -5185,8 +5389,8 @@ initialize_builtins ()
   install ("__INCLUDE_LEVEL__", -1, T_INCLUDE_LEVEL, 0, -1);
   install ("__VERSION__", -1, T_VERSION, 0, -1);
   install ("__TIME__", -1, T_TIME, 0, -1);
-  if (!traditional)
-    install ("__STDC__", -1, T_CONST, 1, -1);
+  if (!traditional) 
+   install ("__STDC__", -1, T_CONST, 1, -1);
 /*  install ("__GNU__", -1, T_CONST, 1, -1);  */
 /*  This is supplied using a -D by the compiler driver
     so that it is present only when truly compiling with GNU C.  */
